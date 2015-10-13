@@ -10,7 +10,7 @@
 </head>
 <body>
 	<h2>
-		<c:out value="=>${account}" />
+		<a href="./user" ><c:out value="=>${account}" /></a>
 		<a href="./do_logout" >logout</a>
 	</h2>
 	

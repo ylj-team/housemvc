@@ -83,7 +83,24 @@ public class Do_LoginController {
 
 		httpResponse.sendRedirect(reloginUrl);
 	}
+	@RequestMapping(value = "/user", method = { RequestMethod.POST, RequestMethod.GET })
+	public String handleLogin(HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
+		
 
+			Boolean login = (Boolean) session.getAttribute("login");
+			String loginedAccount = (String) session.getAttribute("account");
+
+			// already logined
+			if (login != null && login == true) {
+				model.addAttribute("account", loginedAccount);		
+				return "login_user_jstl";
+			}else{
+				setRedirectToLogin( httpResponse,"/user");
+				return "login_user_jstl";
+			}
+					
+	}
+	
 	@RequestMapping(value = "/do_login", method = { RequestMethod.POST, RequestMethod.GET })
 	public String handleLogin(@RequestParam(required = false, value = "account") String accountEncoded, @RequestParam(required = false, value = "passwd") String passwdEncoded,
 			@RequestParam(required = false, value = "nextUrl") String nextUrlEncoded, Model model, HttpSession session, HttpServletResponse httpResponse) throws Exception {
