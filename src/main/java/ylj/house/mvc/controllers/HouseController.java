@@ -24,9 +24,12 @@ import java.io.InputStreamReader;
 
 
 
+
+
+import javax.servlet.http.HttpSession;
+
 import ylj.house.tmsf.salestate.sync.DaySaledHouse;
 import ylj.house.tmsf.salestate.sync.DaySaledHouseDBUtil;
-
 import ylj.utils.ConnectionUtil;
 
 @Controller("HouseControl")
@@ -90,19 +93,22 @@ public class HouseController {
 	//http://107.170.208.159:8080/housemvc/house_jstl?propertyId=26201346&dateFrom=2015-08-17&dateTo=2015-08-17
 	@RequestMapping(value = "/house_jstl", method = RequestMethod.GET)
 	public String handleHouse_JSTL(@RequestParam("propertyId") String propertyId, @RequestParam("dateFrom") String dateFrom,
-			@RequestParam("dateTo") String dateTo, Model model) {
+			@RequestParam("dateTo") String dateTo, Model model,HttpSession session) {
 
 		// 0model.addAttribute("propertyId",propertyId);
 		// model.addAttribute("date", date);
+		
+		String loginedAccount = (String) session.getAttribute("account");
+		session.setAttribute("account", loginedAccount);
+
+	
 
 		System.out.println("     propertyId:" + propertyId);
 		System.out.println("       dateFrom:" + dateFrom);
 		System.out.println("         dateTo:" + dateTo);
-
 		
 		
-		List<DaySaledHouse> dayStates= DaySaledHouseDBUtil.queryDaySaledHouse(propertyId, dateFrom,dateTo);
-		
+		List<DaySaledHouse> dayStates= DaySaledHouseDBUtil.queryDaySaledHouse(propertyId, dateFrom,dateTo);	
 		
 		model.addAttribute("dailyStates", dayStates);
 		// model.addAttribute("dailySigneds", dailySigneds);

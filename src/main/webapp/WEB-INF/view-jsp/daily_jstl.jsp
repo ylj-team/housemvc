@@ -9,10 +9,10 @@
 </head>
 <body>
 	<h2>
-		user
-		<c:out value="=>${dailySigneds}" />
-		<a href="./do_logout_jstl" >logout</a>
+		<c:out value="=>${account}" />
+		<a href="./do_logout" >logout</a>
 	</h2>
+	
 
 
 	<c:if test="${not empty propertyRecords}">

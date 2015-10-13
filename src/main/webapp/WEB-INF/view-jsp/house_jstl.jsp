@@ -25,11 +25,9 @@
 </head>
 <body>
 	<h2>
-		state changed
-		<c:out value="=>" />
-		<a href="./do_logout_jstl" >logout</a>
+		<c:out value="=>${account}" />
+		<a href="./do_logout" >logout</a>
 	</h2>
-
 
 	
 

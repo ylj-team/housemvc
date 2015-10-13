@@ -1,7 +1,11 @@
 <html>
-<body>
-<h2>Hello World 22!</h2>
 
-<a href="./do_logout_jstl" >logout</a>
+<script language="javascript" type="text/javascript">
+window.location.href="login.html";
+</script>
+<body>
+
+<h2>Hello World !</h2>
+
 </body>
 </html>

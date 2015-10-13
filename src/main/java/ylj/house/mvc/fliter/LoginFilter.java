@@ -48,12 +48,12 @@ public class LoginFilter implements Filter {
 		logger.info("excludedUrls:" + this.excludedUrls);
 	}
 
-	public boolean isResourceUrl(String url){
-		if(url.endsWith(".js")){
+	public boolean isResourceUrl(String uri){
+		if(uri.endsWith(".js")){
 			return true;
 		}
 		
-		if(url.endsWith(".jpg")){
+		if(uri.endsWith(".jpg")){
 			return true;
 		}
 		
@@ -91,7 +91,7 @@ request.getQueryString()action=idp.sptopn
 	
 		// System.out.println(">>>: " + url);
 		for (String s : excludedUrls) {
-			if (uri.contains(s)) {
+			if (uri.endsWith(s)) {
 				pass = true;
 				break;
 			}

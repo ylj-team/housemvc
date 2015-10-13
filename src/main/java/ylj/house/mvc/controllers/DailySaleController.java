@@ -25,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
@@ -216,7 +217,7 @@ public class DailySaleController {
 		
 		//http://localhost:8080/housemvc/daily_jstl?date=2015-08-17
 		@RequestMapping(value = "/daily_jstl", method = RequestMethod.GET)
-		public String handleDaily_JSTL(@RequestParam(value="date",required=false) String date,Model model) {
+		public String handleDaily_JSTL(@RequestParam(value="date",required=false) String date,Model model, HttpSession session) {
 			//0model.addAttribute("propertyId",propertyId);
 		    //model.addAttribute("date", date);
 		
@@ -228,6 +229,10 @@ public class DailySaleController {
 				
 				return "redirect:/"+redictUrl;
 			}
+			
+			String loginedAccount = (String) session.getAttribute("account");
+			session.setAttribute("account", loginedAccount);
+
 			
 		//	StringBuffer aStringBuffer=new StringBuffer();
 		

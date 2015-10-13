@@ -1,8 +1,10 @@
 package ylj.house.mvc.controllers.dosomething;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -28,8 +30,8 @@ public class Do_LogoutController {
 		System.out.println("Do_UserLoginController created .");
 		
 	}
-	@RequestMapping(value = "/do_logout_jstl", method = RequestMethod.GET)
-	public String handleLogin(Model model,HttpSession session) {
+	@RequestMapping(value = "/do_logout", method = RequestMethod.GET)
+	public void handleLogin(Model model,HttpSession session,HttpServletResponse httpResponse) throws IOException {
 
 		
 		
@@ -38,10 +40,14 @@ public class Do_LogoutController {
 		
 		//设置session	
 	
-		System.out.println("set session invalidate");		
+		logger.info("set session invalidate");		
 		session.invalidate();
 		
+		String reloginUrl = "./login.html" ;
+		logger.info("Redirect to " + reloginUrl);
+
+		httpResponse.sendRedirect(reloginUrl);
 		
-		return "do_logout_jstl";
+		return ;
 	}
 }

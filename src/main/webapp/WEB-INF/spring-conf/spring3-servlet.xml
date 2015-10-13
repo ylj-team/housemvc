@@ -49,6 +49,8 @@
 	<mvc:resources  mapping="/login.html" location="/html/login.html"/>
 	<mvc:resources  mapping="/login2.html" location="/html/login2.html"/>
 	<mvc:resources  mapping="/encrypt-demo.html" location="/html/encrypt-demo.html"/>
+	
+<!--	<mvc:resources  mapping="/" location="/html/login.html"/> --> 
 
 	<!-- <bean id="helloBean" class="ylj.spring.ioc.annotation.Hello" init-method="init"> 
 		<constructor-arg value="hello" /> <property name="name" value="kitty" /> 
