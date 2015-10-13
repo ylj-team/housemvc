@@ -49,6 +49,7 @@
 	<mvc:resources  mapping="/login.html" location="/html/login.html"/>
 	<mvc:resources  mapping="/login2.html" location="/html/login2.html"/>
 	<mvc:resources  mapping="/encrypt-demo.html" location="/html/encrypt-demo.html"/>
+	<mvc:resources  mapping="/loginpasswordchange.html" location="/html/loginpasswordchange.html"/>
 	
 <!--	<mvc:resources  mapping="/" location="/html/login.html"/> --> 
 

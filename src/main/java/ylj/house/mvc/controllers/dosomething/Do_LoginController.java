@@ -83,8 +83,104 @@ public class Do_LoginController {
 
 		httpResponse.sendRedirect(reloginUrl);
 	}
+
+	private void setRedirectToLoginPasswdChange(HttpServletResponse httpResponse,String account, String message) throws IOException {
+		//
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		// params.add(new BasicNameValuePair("message","账号密码错误"));
+	
+		// errorMessage=errorMessage.replaceAll(" ", "%20");
+		params.add(new BasicNameValuePair("account", account));
+		params.add(new BasicNameValuePair("message", message));
+		//params.add(new BasicNameValuePair("message", nextUrl));
+
+		// URLEncode.encode 会将空格转换为“+”，但是“+”又不在BBBBBBBBBBBBBBB说明的
+		// 空格编码为"+" 而不是 %20
+		String query = URLEncodedUtils.format(params, "UTF-8");
+		query = query.replace("+", "%20");
+		// URLEncodedUtils.f
+		// String
+		// query=URLEncodedUtils.format(params,Charset.defaultCharset());
+		// logger.info("query: " + query);
+		// logger.info("query: " + URLEncoder.encode(errorMessage));
+
+		List<NameValuePair> params2 = URLEncodedUtils.parse(query, Charset.forName("UTF-8"));
+		// List<NameValuePair> params2 =URLEncodedUtils.parse(query,
+		// Charset.defaultCharset());
+		// logger.info("params2 " + params2);
+
+		String reloginUrl = "./loginpasswordchange.html?" + query;
+		logger.info("Redirect to " + reloginUrl);
+
+		httpResponse.sendRedirect(reloginUrl);
+	}
+	
+	
+
+	@RequestMapping(value = "/do_login_passwd_change", method = { RequestMethod.POST, RequestMethod.GET })
+	public String handleLoginPasswdChange(@RequestParam("account") String accountEncoded,
+			@RequestParam("passwd") String passwdEncoded,
+			@RequestParam("new_passwd_1") String new_passwd_1Encoded,
+			HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
+		
+
+		String accountText = null;
+		String passwdText = null;
+		String newPasswdText = null;
+
+		try {
+			if (accountEncoded != null && !"".equals(accountEncoded)) {
+				accountText = new String(RSAKey.decrypt(priKey, Hex.decode(accountEncoded.getBytes())));
+			}
+		} catch (Exception e) {
+			logger.error("decode account failed");
+		}
+		try {
+			if (passwdEncoded != null && !"".equals(passwdEncoded)) {
+				passwdText = new String(RSAKey.decrypt(priKey, Hex.decode(passwdEncoded.getBytes())));
+			}
+		} catch (Exception e) {
+			logger.error("decode passwd failed");
+		}
+		try {
+			if (new_passwd_1Encoded != null && !"".equals(new_passwd_1Encoded)) {
+				newPasswdText = new String(RSAKey.decrypt(priKey, Hex.decode(new_passwd_1Encoded.getBytes())));
+			}
+		} catch (Exception e) {
+			logger.error("decode newPasswd failed");
+		}
+
+		boolean checkResult = UserAffairs.isPasswdRight(accountText, passwdText);
+		logger.info("checkResult:" + checkResult);
+		
+		String message="update new Passwd succes";
+		
+		if(checkResult){
+			
+			try{
+				UserAffairs.newPasswd(accountText, newPasswdText);
+				message="update new Passwd success ";
+				logger.info("update new Passwd success ");
+			}catch(Exception e){
+				message="update new Passwd failed";
+				logger.error("update new Passwd failed ");
+			}
+			
+		}else{
+			logger.info("old Passwd not right ");
+			message="old Passwd not right ";
+		}
+		
+			//@RequestParam(required = false, value = "account") String accountEncoded, @RequestParam(required = false, value = "passwd") String passwdEncoded,
+	
+		setRedirectToLoginPasswdChange( httpResponse, accountText, message);
+		
+		return null;
+					
+	}
+	
 	@RequestMapping(value = "/user", method = { RequestMethod.POST, RequestMethod.GET })
-	public String handleLogin(HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
+	public String handleUser(HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
 		
 
 			Boolean login = (Boolean) session.getAttribute("login");
@@ -93,10 +189,10 @@ public class Do_LoginController {
 			// already logined
 			if (login != null && login == true) {
 				model.addAttribute("account", loginedAccount);		
-				return "login_user_jstl";
+				return "user_jstl";
 			}else{
 				setRedirectToLogin( httpResponse,"/user");
-				return "login_user_jstl";
+				return "user_jstl";
 			}
 					
 	}
@@ -111,7 +207,7 @@ public class Do_LoginController {
 		// already logined
 		if (login != null && login == true) {
 			model.addAttribute("account", loginedAccount);
-			return "login_user_jstl";
+			return "user_jstl";
 		}
 
 	
@@ -151,7 +247,7 @@ public class Do_LoginController {
 		
 		if (accountEncoded == null || passwdEncoded == null) {
 			setRedirectToLogin(httpResponse, nextUrl);
-			return "login_user_jstl";
+			return "user_jstl";
 		}
 		
 
@@ -164,7 +260,7 @@ public class Do_LoginController {
 		if (!checkResult) {
 			
 			setRedirectToLogin(httpResponse, nextUrl);
-			return "login_user_jstl";
+			return "user_jstl";
 			
 		} else {
 			//login success
@@ -181,11 +277,11 @@ public class Do_LoginController {
 				
 				model.addAttribute("account", accountText);
 				
-				return "login_user_jstl";
+				return "user_jstl";
 			}
 
 		}
 
-		return "login_user_jstl";
+		return "user_jstl";
 	}
 }

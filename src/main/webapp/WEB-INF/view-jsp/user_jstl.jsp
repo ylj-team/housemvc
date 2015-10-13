@@ -9,14 +9,16 @@
 
 </head>
 <body>
-	<h2>
+	<h3>
 		<a href="./user" ><c:out value="=>${account}" /></a>
+		
+		<a href="./loginpasswordchange.html?account=${account}" >修改密码</a>
 		<a href="./do_logout" >logout</a>
-	</h2>
+	</h3>
 	
 	
 	<h2>
-		<c:out value="登陆成功" />
+		<c:out value="-----------------------------------" />
 	</h2>
 	
 	<p>
