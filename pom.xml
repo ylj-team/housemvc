@@ -152,6 +152,14 @@
 			<version>1.52</version>
 		</dependency>
 		
+		
+		<dependency>
+			<groupId>com.github.cage</groupId>
+			<artifactId>cage</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		
 		<dependency>
 			<groupId>ylj</groupId>
 			<artifactId>house</artifactId>

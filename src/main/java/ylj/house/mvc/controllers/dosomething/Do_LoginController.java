@@ -182,8 +182,9 @@ public class Do_LoginController {
 	}
 	
 	@RequestMapping(value = "/do_login", method = { RequestMethod.POST, RequestMethod.GET })
-	public String handleLogin(@RequestParam(required = false, value = "account") String accountEncoded, @RequestParam(required = false, value = "passwd") String passwdEncoded,
-			@RequestParam(required = false, value = "nextUrl") String nextUrlEncoded, Model model, HttpSession session, HttpServletResponse httpResponse) throws Exception {
+	public String handleLogin(@RequestParam("account") String accountEncoded, @RequestParam( "passwd") String passwdEncoded,
+			@RequestParam(value="nextUrl",required=false) String nextUrlEncoded,@RequestParam(value="captchaToken",required=false) String captchaToken
+			,Model model, HttpSession session, HttpServletResponse httpResponse) throws Exception {
 
 		Boolean login = (Boolean) session.getAttribute("login");
 		String loginedAccount = (String) session.getAttribute("account");
@@ -194,7 +195,22 @@ public class Do_LoginController {
 			return "user_jstl";
 		}
 
+		//check captchaToken
 	
+		String captchaTokenInSession=(String)session.getAttribute("captchaToken");
+		if(captchaTokenInSession!=null){
+			if(!captchaTokenInSession.equals(captchaToken)){
+				setRedirectToLogin(httpResponse, null,"验证码错误");
+				logger.info("captchaToken check failed." );
+				return null;
+			}else{
+				logger.info("captchaToken check success." );
+			}
+		}else{
+			logger.info("captchaToken not set." );
+		}
+		
+		
 		// String accountCipher=accountEncoded;
 		// String passwdCipher=passwdEncoded;
 
@@ -236,26 +252,20 @@ public class Do_LoginController {
 		logger.info(" passwd:"+passwdEncoded + "=>" + passwdText);
 		logger.info("nextUrl:"+nextUrlEncoded + "=>" + nextUrl);
 		
-		if (accountEncoded == null) {
-			setRedirectToLogin(httpResponse, nextUrl,"account  emputy ");
-			return null;
-		}
-		if (passwdEncoded == null) {
-			setRedirectToLogin(httpResponse, nextUrl,"passwd  emputy ");
-			return null;
-		}
-		
-		
-		boolean checkResult = false;
+	
 		User hitUser=UserAffairs.getUserPasswdRight(accountText, passwdText);
 		
 		if(hitUser==null){
 			setRedirectToLogin(httpResponse, nextUrl,"账户密码错误 ");
+			logger.info("login failed passwd errror,"+accountText+","+passwdText );
+
 			return null;
 		}
 		
 		if(hitUser.getState()!=0){
 			setRedirectToLogin(httpResponse, nextUrl,"账户状态不可以 state:"+hitUser.getState());
+			logger.info("user state:"+hitUser.getState());
+
 			return null;
 		}
 

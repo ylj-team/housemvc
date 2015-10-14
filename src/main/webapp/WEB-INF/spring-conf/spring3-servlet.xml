@@ -51,7 +51,7 @@
 	<mvc:resources  mapping="/encrypt-demo.html" location="/html/encrypt-demo.html"/>
 	<mvc:resources  mapping="/loginpasswordchange.html" location="/html/loginpasswordchange.html"/>
 	<mvc:resources  mapping="/regist.html" location="/html/regist.html"/>
-
+	
 <!--	<mvc:resources  mapping="/" location="/html/login.html"/> --> 
 
 	<!-- <bean id="helloBean" class="ylj.spring.ioc.annotation.Hello" init-method="init"> 

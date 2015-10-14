@@ -129,6 +129,9 @@ function GetQueryString(name)
 		<p>
 			new password : <input type="password" name="passwd_agin" />
 		</p>
+		<p>
+			captcha : <input type="password" name="captchaToken" />
+		</p>
 
 		
 		<input type="submit" value="Submit"   />
@@ -140,6 +143,7 @@ function GetQueryString(name)
 		</p>
 		
 	</form>
+	<img alt="captcha image" src="./do_captcha" />
 
 	<p hidden>jump to "login_jstl"</p>
 

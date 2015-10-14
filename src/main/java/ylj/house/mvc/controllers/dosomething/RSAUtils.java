@@ -160,7 +160,7 @@ public class RSAUtils {
 		return cipher.doFinal(data);
 	}
 	
-	public static byte[] decrypt(byte[] data) throws Exception {
+	public  static byte[] decrypt(byte[] data) throws Exception {
 
 		Cipher cipher = Cipher.getInstance(Cipher_ALGORITHM);
 		cipher.init(Cipher.DECRYPT_MODE, rsaPrivateKey);// 用公钥初始化这个cipher

@@ -31,7 +31,7 @@
 			<filter-class>ylj.house.mvc.fliter.LoginFilter</filter-class>
 			<init-param>
 				<param-name>excludedUrls</param-name>
-				<param-value>/regist.html,/login.html,/login2.html,/do_regist,/do_regist_active,/do_login,/do_logout,/encrypt-demo.html,/</param-value>
+				<param-value>/regist.html,/login.html,/login2.html,/encrypt-demo.html,/do_regist,/do_regist_active,/do_login,/do_logout,/do_captcha,/</param-value>
 			</init-param>
 		</filter>
 		<filter-mapping>

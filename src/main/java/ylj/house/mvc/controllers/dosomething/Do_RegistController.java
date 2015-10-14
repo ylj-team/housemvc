@@ -66,15 +66,44 @@ public class Do_RegistController {
 	
 	@RequestMapping(value = "/do_regist", method = { RequestMethod.POST, RequestMethod.GET })
 	public String handleRegist(@RequestParam("account") String accountEncoded,
-			@RequestParam("passwd") String passwdEncoded,	
+			@RequestParam("passwd") String passwdEncoded,@RequestParam(value="captchaToken" ,required=false) String captchaToken,
 			HttpSession session, Model model,HttpServletRequest httpRequest,HttpServletResponse httpResponse) throws Exception {
 		
 
+		
+
+		String captchaTokenInSession=(String)session.getAttribute("captchaToken");
+		if(captchaTokenInSession!=null){
+			if(!captchaTokenInSession.equals(captchaToken)){
+				setRedirectToRegPage(httpResponse,"验证码错误");
+				logger.info("captchaToken check failed." );
+				return null;
+			}else{
+				logger.info("captchaToken check success." );
+			}
+		}else{
+			logger.info("captchaToken not set." );
+		}
+		
+		
+		
 		String accountText = null;
 		String passwdText = null;
 		
 		logger.info("accountEncoded:"+accountEncoded);
 		logger.info(" passwdEncoded:"+passwdEncoded);
+		
+		if (accountEncoded==null) {
+			logger.error("accountEncoded==null");
+			setRedirectToRegPage(httpResponse,"accountEncoded==null");
+			return null;
+		}
+		if (passwdEncoded==null) {
+			logger.error("passwdEncoded==null");
+			setRedirectToRegPage(httpResponse,"passwdEncoded==null");
+			return null;
+		}	
+		
 		
 		try {
 			if (accountEncoded != null && !"".equals(accountEncoded)) {
@@ -95,6 +124,12 @@ public class Do_RegistController {
 			return null;
 		}
 	
+		if (!accountText.matches("[\\w\\.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+")) {
+			logger.error("email format error, account:"+accountText);
+			setRedirectToRegPage(httpResponse,"email format error, account:"+accountText);
+			return null;
+		}
+		
 	
 		if(UserAffairs.isAccountExists(accountText)){
 			logger.error("User Account is Exists:"+accountText);

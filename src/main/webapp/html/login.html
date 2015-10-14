@@ -1,11 +1,17 @@
 <html>
-<script language="JavaScript" type="text/javascript" src="./js/jsbn/jsbn.js"></script>
-<script language="JavaScript" type="text/javascript" src="./js/jsbn/prng4.js"></script>
-<script language="JavaScript" type="text/javascript" src="./js/jsbn/rng.js"></script>
-<script language="JavaScript" type="text/javascript" src="./js/jsbn/rsa.js"></script>
-<script language="JavaScript" type="text/javascript" src="./js/jsbn/base64.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="./js/jsbn/jsbn.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="./js/jsbn/prng4.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="./js/jsbn/rng.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="./js/jsbn/rsa.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="./js/jsbn/base64.js"></script>
 
-<script language="JavaScript" type="text/javascript" src="./js/security/encryption.js"></script>
+<script language="JavaScript" type="text/javascript"
+	src="./js/security/encryption.js"></script>
 
 
 <script language="JavaScript">
@@ -21,11 +27,30 @@ function GetQueryString(name)
 
 
 	
-	function do_encrypt_input() {
+	function onSubmit() {
 		
-		//alert("do_encrypt_input()");
-		console.log("do_encrypt_input()");
-
+		//alert("onSubmit()");
+		
+		console.log("onSubmit()");
+		
+		try {
+		　　
+		　
+		if (document.login_input.account.value === null||document.login_input.account.value.length==0)
+		{
+			alert ("账户不得为空");	
+			return false;
+		}
+		//console.log("onSubmit()1");
+		
+		if (document.login_input.passwd.value === null||document.login_input.passwd.value.length==0)
+		{
+			alert ("密码不得为空");	
+			return false;
+		}	
+		//console.log("onSubmit()2");
+		
+		
 		var accountCipherText = encrypt(document.login_input.account.value);
 		var passwdCipherText = encrypt(document.login_input.passwd.value);
 
@@ -35,6 +60,7 @@ function GetQueryString(name)
 		document.login_input.account.value=accountCipherText;
 		document.login_input.passwd.value=passwdCipherText;
 		
+	//	alert("alert ,wait to jump");
 		//
 		var nextUrl=GetQueryString("nextUrl");
 	
@@ -48,9 +74,15 @@ function GetQueryString(name)
 		console.log(document.login_input.passwd.value+"=>"+nextUrl);
 		
 		
-		//alert("alert ,wait to jump");
+		///alert("alert ,wait to jump");
 		
-		return false;
+		　 } catch(err) {
+		　　 　//　alert("捕捉到例外，开始执行catch块语句 --->");
+		　　 //　　alert("错误名称: " + err.name+" ---> ");
+		　　 　　alert("错误信息: " + err.message+" ---> ");
+		　　}
+		
+		return true;
 	}
 	
 	function do_init() {
@@ -74,6 +106,8 @@ function GetQueryString(name)
 			element.innerHTML="<font color='#FF0000' > =>"+decodedMessage+" </font>";
 			
 		}
+		
+		console.log("do_init complete.");		
 	}
 </script>
 
@@ -86,33 +120,39 @@ function GetQueryString(name)
 
 </head>
 
- <body onLoad='do_init();'>  
+<body onLoad='do_init();'>
 
 	<h3>
-		<a href="./user" id="user" ></a>
-		<a href="./regist.html" >注册</a>
+		<a href="./user" id="user"></a> <a href="./regist.html">注册</a>
 	</h3>
-	
-	<form name="login_input"  action="./do_login" method="post" onsubmit="do_encrypt_input()">
+
+	<form name="login_input" action="./do_login" method="post"
+		onsubmit="return onSubmit()">
 		<p>
 			account: <input type="text" name="account" />
 		</p>
 		<p>
 			passwd : <input type="password" name="passwd" />
 		</p>
-		<p hidden >
+		<p>
+			captcha : <input type="password" name="captchaToken" />
+		</p>
+
+
+		<p hidden>
 			nextUrl: <input type="text" name=nextUrl />
 		</p>
-		
-		<input type="submit" value="Submit"   />
-		
+
+
+		<input type="submit" value="Submit" />
+
 		<!--  <input hidden type="button" value="encrypt" onclick="do_encrypt_input()" /> -->
-		
-		<p id="message" >
-			
-		</p>
-		
+
+		<p id="message"></p>
+
 	</form>
+
+	<img alt="captcha image" src="./do_captcha" />
 
 	<p hidden>jump to "login_jstl"</p>
 
