@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ylj.house.user.User;
 import ylj.house.user.UserAffairs;
 
 @Controller("Do_LoginController")
@@ -37,13 +38,13 @@ public class Do_LoginController {
 
 	}
 
-	private void setRedirectToLogin(HttpServletResponse httpResponse, String nextUrl) throws IOException {
+	private void setRedirectToLogin(HttpServletResponse httpResponse, String nextUrl,String message) throws IOException {
 		//
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		// params.add(new BasicNameValuePair("message","账号密码错误"));
-		String errorMessage = "账号密码错误.";
+		
 		// errorMessage=errorMessage.replaceAll(" ", "%20");
-		params.add(new BasicNameValuePair("message", errorMessage));
+		params.add(new BasicNameValuePair("message", message));
 		params.add(new BasicNameValuePair("nextUrl", nextUrl));
 
 		// URLEncode.encode 会将空格转换为“+”，但是“+”又不在BBBBBBBBBBBBBBB说明的
@@ -174,7 +175,7 @@ public class Do_LoginController {
 				model.addAttribute("account", loginedAccount);		
 				return "user_jstl";
 			}else{
-				setRedirectToLogin( httpResponse,"/user");
+				setRedirectToLogin( httpResponse,"/user","请先登陆");
 				return "user_jstl";
 			}
 					
@@ -202,11 +203,22 @@ public class Do_LoginController {
 		String nextUrl = null;
 
 		try {
+			if (nextUrlEncoded != null && !"".equals(nextUrlEncoded)) {
+				nextUrl = new String(UrlBase64.decode(nextUrlEncoded.getBytes()));
+			}
+		} catch (Exception e) {
+			logger.error("decode nextUrl failed");
+			setRedirectToLogin(httpResponse, null,"decode nextUrl failed");
+			return null;
+		}
+		try {
 			if (accountEncoded != null && !"".equals(accountEncoded)) {
 				accountText = new String(RSAUtils.decrypt( Hex.decode(accountEncoded.getBytes())));
 			}
 		} catch (Exception e) {
 			logger.error("decode account failed");
+			setRedirectToLogin(httpResponse, nextUrl,"decode account failed");
+			return null;
 		}
 		try {
 			if (passwdEncoded != null && !"".equals(passwdEncoded)) {
@@ -214,57 +226,58 @@ public class Do_LoginController {
 			}
 		} catch (Exception e) {
 			logger.error("decode passwd failed");
+			setRedirectToLogin(httpResponse, nextUrl,"decode passwd failed");
+			return null;
 		}
 
-		try {
-			if (nextUrlEncoded != null && !"".equals(nextUrlEncoded)) {
-				nextUrl = new String(UrlBase64.decode(nextUrlEncoded.getBytes()));
-			}
-		} catch (Exception e) {
-			logger.error("decode nextUrl failed");
-		}
+		
 
 		logger.info("account:"+accountEncoded + "=>" + accountText);
 		logger.info(" passwd:"+passwdEncoded + "=>" + passwdText);
 		logger.info("nextUrl:"+nextUrlEncoded + "=>" + nextUrl);
 		
-		if (accountEncoded == null || passwdEncoded == null) {
-			setRedirectToLogin(httpResponse, nextUrl);
-			return "user_jstl";
+		if (accountEncoded == null) {
+			setRedirectToLogin(httpResponse, nextUrl,"account  emputy ");
+			return null;
+		}
+		if (passwdEncoded == null) {
+			setRedirectToLogin(httpResponse, nextUrl,"passwd  emputy ");
+			return null;
 		}
 		
-
-		boolean checkResult = UserAffairs.isPasswdRight(accountText, passwdText);
-
-		logger.info("checkResult:" + checkResult);
-
-		// 设置cookie
-		// HttpServletResponse response.addCookie(new Cookie("foo", "bar"));
-		if (!checkResult) {
-			
-			setRedirectToLogin(httpResponse, nextUrl);
-			return "user_jstl";
-			
-		} else {
-			//login success
-			// 设置session
-			logger.info("set session, login=true");
-			
-			session.setAttribute("login", true);
-			session.setAttribute("account", accountText);
-
-			if (nextUrl != null && !"".equals(nextUrl)) {
-				httpResponse.sendRedirect(nextUrl);
-				logger.info("Redirect to " + nextUrl);
-			} else {
-				
-				model.addAttribute("account", accountText);
-				
-				return "user_jstl";
-			}
-
+		
+		boolean checkResult = false;
+		User hitUser=UserAffairs.getUserPasswdRight(accountText, passwdText);
+		
+		if(hitUser==null){
+			setRedirectToLogin(httpResponse, nextUrl,"账户密码错误 ");
+			return null;
+		}
+		
+		if(hitUser.getState()!=0){
+			setRedirectToLogin(httpResponse, nextUrl,"账户状态不可以 state:"+hitUser.getState());
+			return null;
 		}
 
-		return "user_jstl";
+		logger.info("login success :" + hitUser.getAccount());
+
+
+			// 设置session
+		logger.info("set session, login=true");
+			
+		session.setAttribute("login", true);
+		session.setAttribute("account", accountText);
+
+		if (nextUrl != null && !"".equals(nextUrl)) {
+			httpResponse.sendRedirect(nextUrl);
+			logger.info("Redirect to nextUrl:" + nextUrl);
+			return null;
+		} else {		
+			model.addAttribute("account", accountText);		
+			return "user_jstl";
+		}
+
+	
+
 	}
 }
