@@ -16,7 +16,7 @@ import javax.crypto.Cipher;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
-public class RSAKey {
+public class RSAUtils {
 
 	/*
 	 * static String Modulus_hex =
@@ -36,13 +36,38 @@ public class RSAKey {
 	  
 	  static String Public_exponent_hex = "010001";
 	  
-	  static String Private_exponent_hex ="00" +
+	  static String Private_exponent_hex ="" +
 	  "02c2243c68363f652cef2ad9c3e62c541dce48687c3e051b6bee1bbe703ebe1a" +
 	  "a9de8a5f5c20321e5c122b58a2633f6b0ec2ec9e68e2f7e24d05a4c31b1f9fc0" +
 	  "148189be60630edbbaa90a1c0cfeb5ff5b7a8fc11fa0e22fb27d3c3a689afac4" +
 	  "641bbfee1b2a5d7afcb48449b3a58f493551056cf6d3a63393bee03b6f28db01";
 	
-	
+	  /*
+	  static String Private_exponent_hex ="00" +
+			  "02c2243c68363f652cef2ad9c3e62c541dce48687c3e051b6bee1bbe703ebe1a" +
+			  "a9de8a5f5c20321e5c122b58a2633f6b0ec2ec9e68e2f7e24d05a4c31b1f9fc0" +
+			  "148189be60630edbbaa90a1c0cfeb5ff5b7a8fc11fa0e22fb27d3c3a689afac4" +
+			  "641bbfee1b2a5d7afcb48449b3a58f493551056cf6d3a63393bee03b6f28db01";
+			  */
+			
+	  
+	  static byte[] Modulus_byte= Hex.decode(Modulus_hex.getBytes());
+	  static byte[] Public_exponent_byte= Hex.decode(Public_exponent_hex.getBytes());
+	  static byte[] Private_exponent_byte= Hex.decode(Private_exponent_hex.getBytes());
+		
+	  static RSAPublicKey rsaPublicKey=null;
+	  static RSAPrivateKey rsaPrivateKey=null;
+	  
+	public  static  void init() {
+		  
+		  try {			  
+			rsaPublicKey=generateRSAPublicKey(Modulus_byte,Public_exponent_byte);			 
+			rsaPrivateKey=generateRSAPrivateKey(Modulus_byte, Private_exponent_byte);			
+		  } catch (Exception e) {			
+			  e.printStackTrace();
+		  }
+		  
+	  }
 	/*
 	// 要加 Modulus_hex Private_exponent_hex 00？
 	static String Modulus_hex = "00" + "a5261939975948bb7a58dffe5ff54e65f0498f9175f5a09288810b8975871e99" + "af3b5dd94057b0fc07535f5f97444504fa35169d461d0d30cf0192e307727c06"
@@ -127,7 +152,23 @@ public class RSAKey {
 
 		return cipher.doFinal(data);
 	}
+	public static byte[] encrypt(byte[] data) throws Exception {
 
+		Cipher cipher = Cipher.getInstance(Cipher_ALGORITHM);
+		cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey);// 用公钥初始化这个cipher
+
+		return cipher.doFinal(data);
+	}
+	
+	public static byte[] decrypt(byte[] data) throws Exception {
+
+		Cipher cipher = Cipher.getInstance(Cipher_ALGORITHM);
+		cipher.init(Cipher.DECRYPT_MODE, rsaPrivateKey);// 用公钥初始化这个cipher
+
+		return cipher.doFinal(data);
+	}
+	
+	
 	/**
 	 * 解密
 	 * 
@@ -169,14 +210,15 @@ public class RSAKey {
 
 		long startTime = System.currentTimeMillis();
 
-	//	String ciphertext = new String(Hex.encode(encrypt(pubKey, text.getBytes())));
+		String ciphertext = new String(Hex.encode(encrypt(pubKey, text.getBytes())));
 
+		/*
 		String ciphertext = "672eacfce098f3ad8b5bcc79a28f4f7e32fa708c7182fd64f509fb63bea00c38dc9271cfc6b80454e83b6bb9bfb8eafc09ee630e7adecb0f583255ab8fbdb314d3683975303587adab9585ad8241f478466b3f1956c180490c5b1508867b9ffa095ee057c87553c65210644a7a9abc2491678c2d32e7f5231aed7b8eb5f9a23b"
 				+ ""
 				+ ""
 				+ "";
 		
-		
+		*/
 		
 		System.out.println("加密后=" + ciphertext);
 		long costTime = System.currentTimeMillis() - startTime;

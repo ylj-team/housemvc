@@ -33,8 +33,7 @@ public class Do_LogoutController {
 	@RequestMapping(value = "/do_logout", method = RequestMethod.GET)
 	public void handleLogin(Model model,HttpSession session,HttpServletResponse httpResponse) throws IOException {
 
-		
-		
+			
 		//设置cookie
 		//HttpServletResponse response.addCookie(new Cookie("foo", "bar"));
 		

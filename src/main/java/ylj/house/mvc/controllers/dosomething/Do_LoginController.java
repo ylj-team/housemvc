@@ -30,25 +30,8 @@ public class Do_LoginController {
 
 	static Logger logger = LoggerFactory.getLogger(Do_LoginController.class);
 
-	RSAPrivateKey priKey = null;
-
-	static String Modulus_hex = "00" + "bbea718283a23953a59cf2f14c177a7d1bc82c6109b6e97f7a495c3869b1db1e" + "546971de9a3a13d711b444deee67bb6c9f215d7e89ae3e1366b45ddef8be3c9a"
-			+ "02920324e98d0f9dffc8414ce6e6e12b986c62fa60e5b4149ab0f693c2cc6816" + "5dc861030adcdede7589d5ba1fa1cedf8bdf4d1565db7ee264ae37633621aeef";
-
-	static String Public_exponent_hex = "010001";
-
-	static String Private_exponent_hex = "" + "02c2243c68363f652cef2ad9c3e62c541dce48687c3e051b6bee1bbe703ebe1a"
-			+ "a9de8a5f5c20321e5c122b58a2633f6b0ec2ec9e68e2f7e24d05a4c31b1f9fc0" + "148189be60630edbbaa90a1c0cfeb5ff5b7a8fc11fa0e22fb27d3c3a689afac4"
-			+ "641bbfee1b2a5d7afcb48449b3a58f493551056cf6d3a63393bee03b6f28db01";
-
+	
 	public Do_LoginController() throws Exception {
-
-		byte[] modulus = Hex.decode(Modulus_hex.getBytes());
-		byte[] publicExponent = Hex.decode(Public_exponent_hex.getBytes());
-
-		byte[] privateExponent = Hex.decode(Private_exponent_hex.getBytes());
-
-		priKey = RSAKey.generateRSAPrivateKey(modulus, privateExponent);
 
 		System.out.println("Do_UserLoginController created .");
 
@@ -130,21 +113,21 @@ public class Do_LoginController {
 
 		try {
 			if (accountEncoded != null && !"".equals(accountEncoded)) {
-				accountText = new String(RSAKey.decrypt(priKey, Hex.decode(accountEncoded.getBytes())));
+				accountText = new String(RSAUtils.decrypt(Hex.decode(accountEncoded.getBytes())));
 			}
 		} catch (Exception e) {
 			logger.error("decode account failed");
 		}
 		try {
 			if (passwdEncoded != null && !"".equals(passwdEncoded)) {
-				passwdText = new String(RSAKey.decrypt(priKey, Hex.decode(passwdEncoded.getBytes())));
+				passwdText = new String(RSAUtils.decrypt(Hex.decode(passwdEncoded.getBytes())));
 			}
 		} catch (Exception e) {
 			logger.error("decode passwd failed");
 		}
 		try {
 			if (new_passwd_1Encoded != null && !"".equals(new_passwd_1Encoded)) {
-				newPasswdText = new String(RSAKey.decrypt(priKey, Hex.decode(new_passwd_1Encoded.getBytes())));
+				newPasswdText = new String(RSAUtils.decrypt(Hex.decode(new_passwd_1Encoded.getBytes())));
 			}
 		} catch (Exception e) {
 			logger.error("decode newPasswd failed");
@@ -220,14 +203,14 @@ public class Do_LoginController {
 
 		try {
 			if (accountEncoded != null && !"".equals(accountEncoded)) {
-				accountText = new String(RSAKey.decrypt(priKey, Hex.decode(accountEncoded.getBytes())));
+				accountText = new String(RSAUtils.decrypt( Hex.decode(accountEncoded.getBytes())));
 			}
 		} catch (Exception e) {
 			logger.error("decode account failed");
 		}
 		try {
 			if (passwdEncoded != null && !"".equals(passwdEncoded)) {
-				passwdText = new String(RSAKey.decrypt(priKey, Hex.decode(passwdEncoded.getBytes())));
+				passwdText = new String(RSAUtils.decrypt( Hex.decode(passwdEncoded.getBytes())));
 			}
 		} catch (Exception e) {
 			logger.error("decode passwd failed");
