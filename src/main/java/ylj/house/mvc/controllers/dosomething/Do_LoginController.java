@@ -271,10 +271,12 @@ public class Do_LoginController {
 
 		logger.info("login success :" + hitUser.getAccount());
 
-
-			// 设置session
+		
+		// 设置session
 		logger.info("set session, login=true");
-			
+		// mins
+		session.setMaxInactiveInterval(7*24 * 60);
+		
 		session.setAttribute("login", true);
 		session.setAttribute("account", accountText);
 
