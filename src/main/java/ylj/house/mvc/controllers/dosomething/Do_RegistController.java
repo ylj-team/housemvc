@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.bouncycastle.jcajce.provider.digest.MD5;
 import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ public class Do_RegistController {
 	
 	static Logger logger=LoggerFactory.getLogger(Do_RegistController.class);
 
+	static String SALT="regist";
+	
 	MailSender mailSender =null;
 	public Do_RegistController() throws Exception{
 		
@@ -165,8 +168,15 @@ public class Do_RegistController {
 		String acticeUrl=url.replace("do_regist", "do_regist_active");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		
+	//	MD5.Digest.
+		
+		String applyCodeEncoded=MessageDigestUtil.digest(applyCode+"."+SALT, MessageDigestUtil.Algorithm_MD5);
+		
 		params.add(new BasicNameValuePair("account", accountText));
-		params.add(new BasicNameValuePair("applyCode", applyCode));
+		params.add(new BasicNameValuePair("applyCode", applyCodeEncoded));
+	//	params.add(new BasicNameValuePair("applyCodeEncoded", applyCodeEncoded));
+		
 		String query = URLEncodedUtils.format(params, "UTF-8");
 		query = query.replace("+", "%20");
 		
@@ -204,17 +214,28 @@ public class Do_RegistController {
 			@RequestParam("applyCode") String applyCodeEncoded,	
 			HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
 		
-		
-		String applyCode=applyCodeEncoded;
-		
-		if(ApplicantAffairs.isApplyCodeRight(account, applyCode)){
-			ApplicantAffairs.activateUser(account);
-			setRedirectToLogin( httpResponse, "激活成功 "+account);
-		}else{
-			setRedirectToLogin( httpResponse, "激活失败，激活码错误 "+account);
+		Applicant userApplicant=ApplicantAffairs.getApplicant(account);
+		if(userApplicant==null){
+			setRedirectToRegPage( httpResponse, "激活失败");
+			return null;
 		}
 		
-		return null;
+		if(userApplicant.isActivated()){
+			setRedirectToRegPage( httpResponse, "已激活账户");
+			return null;
+		}
+		
+		
+		String expectApplyCodeEncoded=MessageDigestUtil.digest(userApplicant.getApplyCode()+"."+SALT, MessageDigestUtil.Algorithm_MD5);
+		
+		if(expectApplyCodeEncoded.equals(applyCodeEncoded)){
+			ApplicantAffairs.activateUser(account);
+			setRedirectToLogin( httpResponse, "激活成功 "+account);
+			return null;
+		}else{
+			 setRedirectToRegPage( httpResponse, "激活失败，激活码错误 "+account);
+			return null;
+		}
 		
 	}
 	private void setRedirectToLogin(HttpServletResponse httpResponse, String message) throws IOException {

@@ -223,7 +223,7 @@ public class Do_LoginController {
 				nextUrl = new String(UrlBase64.decode(nextUrlEncoded.getBytes()));
 			}
 		} catch (Exception e) {
-			logger.error("decode nextUrl failed");
+			logger.error("decode nextUrl failed nextUrlEncoded:"+nextUrlEncoded);
 			setRedirectToLogin(httpResponse, null,"decode nextUrl failed");
 			return null;
 		}

@@ -135,9 +135,11 @@ function GetQueryString(name)
 			passwd : <input type="password" name="passwd" />
 		</p>
 		<p>
-			captcha : <input type="password" name="captchaToken" />
+			<img alt="captcha image" src="./do_captcha" />		
 		</p>
-
+		<p>
+			验证码: <input type="password" name="captchaToken" />
+		</p>
 
 		<p hidden>
 			nextUrl: <input type="text" name=nextUrl />
@@ -152,7 +154,7 @@ function GetQueryString(name)
 
 	</form>
 
-	<img alt="captcha image" src="./do_captcha" />
+	
 
 	<p hidden>jump to "login_jstl"</p>
 

@@ -109,7 +109,7 @@ request.getQueryString()action=idp.sptopn
 					}
 				}
 			} else {
-				System.out.println("cookies=null");
+				//System.out.println("cookies=null");
 			}
 		}
 		// if (!pass) {
@@ -119,16 +119,16 @@ request.getQueryString()action=idp.sptopn
 		Enumeration<String> attributeNames = session.getAttributeNames();
 		while (attributeNames.hasMoreElements()) {
 			String attributeName = attributeNames.nextElement();
-			System.out.println("seesion." + attributeName + ":" + session.getAttribute(attributeName));
+			//System.out.println("seesion." + attributeName + ":" + session.getAttribute(attributeName));
 			sessionCounter++;
 		}
 
 		Object login = (Object) session.getAttribute("login");
 		if (login != null) {
 			pass = true;
-			System.out.println("seesion.login ok");
+		//	System.out.println("seesion.login ok");
 		}
-		System.out.println("seesion.size()="+sessionCounter);
+	//	System.out.println("seesion.size()="+sessionCounter);
 		// }
 
 		// pass=true;
