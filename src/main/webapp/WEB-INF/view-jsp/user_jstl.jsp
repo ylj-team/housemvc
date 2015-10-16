@@ -25,19 +25,9 @@
 		<a href="./daily_jstl" >每日签约</a>
 	</p>
 	
-	<h2 hidden>
-		account
-		<c:out value="=>${account}" />
+	<h2>
+		<c:out value="-----------------------------------" />
 	</h2>
 	
-	<h2 hidden>
-		passwd
-		<c:out value="=>${passwd}" />
-	</h2>
-	
-	<h2 hidden>
-		nextUrl
-		<c:out value="=>${nextUrl}" />
-	</h2>
 </body>
 </html>
