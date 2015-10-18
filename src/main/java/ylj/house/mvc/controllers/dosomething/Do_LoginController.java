@@ -248,16 +248,16 @@ public class Do_LoginController {
 
 		
 
-		logger.info("account:"+accountEncoded + "=>" + accountText);
-		logger.info(" passwd:"+passwdEncoded + "=>" + passwdText);
-		logger.info("nextUrl:"+nextUrlEncoded + "=>" + nextUrl);
+		logger.info("account:"+accountEncoded + "=>" + accountText+".");
+		logger.info(" passwd:"+passwdEncoded + "=>" + passwdText+".");
+		logger.info("nextUrl:"+nextUrlEncoded + "=>" + nextUrl+".");
 		
 	
 		User hitUser=UserAffairs.getUserPasswdRight(accountText, passwdText);
 		
 		if(hitUser==null){
 			setRedirectToLogin(httpResponse, nextUrl,"账户密码错误 ");
-			logger.info("login failed passwd errror,"+accountText+","+passwdText );
+			logger.info("login failed passwd errror,"+accountText+","+passwdText+"." );
 
 			return null;
 		}
