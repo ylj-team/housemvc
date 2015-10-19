@@ -28,31 +28,46 @@
 
 	<form name="login_input" action="./do_PropertySearch_jstl" method="get"  accept-charset="utf-8" onsubmit="document.charset='utf-8';">
 		
-		<p>
-			query : <input type="text" name="query" value="${query}"/>
-		</p>
 		
-		<input type="submit" value="Submit" />
+		<input type="text" name="query" value="${query}"/>	
+		
+		<input type="submit" value="搜索" />
 
 		
 	</form>
-	<c:out value="-中文" />
-	<c:if test="${not empty properties}">
+
+
+		<HR align=center width=100% color=#987cb9 SIZE=1>
+				<p>
+		<c:out value="命中结果：${searchResultSize}" />
+	</p>
+		 
+	<c:if test="${not empty searchResults}">
+
 
 		<ul>
-			<c:forEach var="property" items="${properties}">
+			<c:forEach var="searchRecord" items="${searchResults}">
 				
-				<HR align=center width=100% color=#987cb9 SIZE=1>
-				
+			
 				<li>
 					<h3>
 						<c:out value="------------------------" />
 					</h3> 
 					
-					<div class="div-a">
-						${property.propertyName}	
-								
-					</div>
+				<!--  	<div class="div-a"> -->
+						
+					<ul>
+			
+						<li><a href="${searchRecord.jumpUrl}" target="_blank">${searchRecord.propertyName}</a></li>
+					
+						<li>${searchRecord.city}</li>
+						<li>${searchRecord.addr}</li>
+						<li>${searchRecord.developer}</li>
+						
+							
+					</ul>
+					
+						<!-- 	</div>-->
 					
 
 				</li>

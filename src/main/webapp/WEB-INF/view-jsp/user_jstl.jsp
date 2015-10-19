@@ -19,14 +19,31 @@
 	
 	<h2>
 		<c:out value="-----------------------------------" />
-	</h2>
-	
+	</h2>	
 	<p>
 		<a href="./daily_jstl" >每日签约</a>
 	</p>
 	
+	
 	<h2>
-		<c:out value="-----------------------------------" />
+		<c:out value="-----------------------------------" />	
+	</h2>
+	<h3>		
+		楼盘查找
+	</h3>
+	
+	<p>		
+			
+		<form name="login_input" action="./do_PropertySearch_jstl" method="get"  accept-charset="utf-8" onsubmit="document.charset='utf-8';">	
+		 	<input type="text" name="query" value="${query}"/>	
+			<input type="submit" value="搜索" />	
+		</form>
+	
+	</p>
+	
+	
+	<h2>
+		<c:out value="-----------------------------------" />	
 	</h2>
 	
 </body>
