@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import ylj.house.mvc.controllers.HouseController;
 import ylj.house.mvc.controllers.dosomething.RSAUtils;
 import ylj.mail.MailSender;
+import ylj.security.passwd.PasswdEncodeStrategy;
 import ylj.utils.ConnectionUtil;
 import ylj.utils.EntityManagerHelper;
 
@@ -40,7 +41,8 @@ public class AppConfigListener implements ServletContextListener{
 		System.out.println("RSAUtils init ...");			
 		RSAUtils.init();
 		
-		
+		System.out.println("PasswdEncodeStrategy init ...");			
+		PasswdEncodeStrategy.init();
 	
 	}
 	

@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ylj.house.user.User;
 import ylj.house.user.UserAffairs;
+import ylj.security.passwd.PasswdEncodeStrategy;
+import ylj.security.passwd.PasswdEncoder;
 
 @Controller("Do_LoginController")
 public class Do_LoginController {
@@ -134,30 +136,53 @@ public class Do_LoginController {
 			logger.error("decode newPasswd failed");
 		}
 
-		boolean checkResult = UserAffairs.isPasswdRight(accountText, passwdText);
-		logger.info("checkResult:" + checkResult);
 		
-		String message="update new Passwd succes";
-		
-		if(checkResult){
-			
-			try{
-				UserAffairs.newPasswd(accountText, newPasswdText);
-				message="update new Passwd success ";
-				logger.info("update new Passwd success ");
-			}catch(Exception e){
-				message="update new Passwd failed";
-				logger.error("update new Passwd failed ");
-			}
-			
-		}else{
-			logger.info("old Passwd not right ");
-			message="old Passwd not right ";
+		User user=UserAffairs.getUser(accountText);
+		if(user==null){
+			setRedirectToLoginPasswdChange(httpResponse,accountText, "账户不存在："+accountText);
+			logger.info("check old passwd failed ,account not exits"+accountText );
+			return null;
 		}
 		
+		PasswdEncoder	passwdEncoder=PasswdEncodeStrategy.getPasswdEncoder(user.getPasswdEncodeStrategy());
+		
+		if(passwdEncoder==null){
+			setRedirectToLoginPasswdChange(httpResponse,accountText, "原密码加密策略错误 ,Strategy："+user.getPasswdEncodeStrategy());
+			logger.error("check old passwd  ,no Strategy find,Strategy："+user.getPasswdEncodeStrategy());
+			return null;
+		}
+		
+		String encodedPassed=passwdEncoder.passwdEncode(passwdText);
+		
+		if(!encodedPassed.equals(user.getPasswdEncoded())){
+			setRedirectToLoginPasswdChange(httpResponse, accountText,"原账户密码不正确");
+			logger.info("check old passwd ,password not match.");
+			return null;
+		}
+		
+		
+		
+	
+			
+			try{
+				PasswdEncoder newPasswdEncoder=PasswdEncodeStrategy.getPasswdEncoder(PasswdEncodeStrategy.Strategy_E_1);
+				String newPasswdEncoded=newPasswdEncoder.passwdEncode(newPasswdText);
+				
+				UserAffairs.newPasswd(accountText, PasswdEncodeStrategy.Strategy_E_1,newPasswdEncoded);
+				
+				setRedirectToLoginPasswdChange( httpResponse, accountText, "密码修改成功");
+				
+				logger.info("update new Passwd success ");
+			}catch(Exception e){
+				
+				logger.error("update new Passwd failed ");
+				setRedirectToLoginPasswdChange( httpResponse, accountText, "设置新密码失败");
+			}
+			
+	
 			//@RequestParam(required = false, value = "account") String accountEncoded, @RequestParam(required = false, value = "passwd") String passwdEncoded,
 	
-		setRedirectToLoginPasswdChange( httpResponse, accountText, message);
+		
 		
 		return null;
 					
@@ -224,8 +249,9 @@ public class Do_LoginController {
 			}
 		} catch (Exception e) {
 			logger.error("decode nextUrl failed nextUrlEncoded:"+nextUrlEncoded);
-			setRedirectToLogin(httpResponse, null,"decode nextUrl failed");
-			return null;
+			//setRedirectToLogin(httpResponse, null,"decode nextUrl failed");
+			//return null;
+			nextUrl=null;
 		}
 		try {
 			if (accountEncoded != null && !"".equals(accountEncoded)) {
@@ -253,23 +279,41 @@ public class Do_LoginController {
 		logger.info("nextUrl:"+nextUrlEncoded + "=>" + nextUrl+".");
 		
 	
-		User hitUser=UserAffairs.getUserPasswdRight(accountText, passwdText);
-		
-		if(hitUser==null){
-			setRedirectToLogin(httpResponse, nextUrl,"账户密码错误 ");
-			logger.info("login failed passwd errror,"+accountText+","+passwdText+"." );
-
+		User user=UserAffairs.getUser(accountText);
+		if(user==null){
+			setRedirectToLogin(httpResponse, nextUrl,"账户不存在："+accountText);
+			logger.info("login failed ,account not exits"+accountText );
 			return null;
 		}
 		
-		if(hitUser.getState()!=0){
-			setRedirectToLogin(httpResponse, nextUrl,"账户状态不可以 state:"+hitUser.getState());
-			logger.info("user state:"+hitUser.getState());
+		
+		
+		PasswdEncoder	passwdEncoder=PasswdEncodeStrategy.getPasswdEncoder(user.getPasswdEncodeStrategy());
+		
+		if(passwdEncoder==null){
+			setRedirectToLogin(httpResponse, nextUrl,"密码加密策略错误 ,Strategy："+user.getPasswdEncodeStrategy());
+			logger.error("login failed ,no Strategy find,Strategy："+user.getPasswdEncodeStrategy());
+			return null;
+		}
+		
+		String encodedPassed=passwdEncoder.passwdEncode(passwdText);
+		
+		if(!encodedPassed.equals(user.getPasswdEncoded())){
+			setRedirectToLogin(httpResponse, nextUrl,"账户密码不正确");
+			logger.info("login failed ,password not match.");
+			return null;
+		}
+		
+		
+		
+		if(user.getState()!=0){
+			setRedirectToLogin(httpResponse, nextUrl,"账户状态不可以 state:"+user.getState());
+			logger.info("user state:"+user.getState());
 
 			return null;
 		}
 
-		logger.info("login success :" + hitUser.getAccount());
+		logger.info("login success :" + user.getAccount());
 
 		
 		// 设置session

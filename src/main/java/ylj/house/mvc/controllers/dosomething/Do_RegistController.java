@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,6 +27,8 @@ import ylj.house.user.Applicant;
 import ylj.house.user.ApplicantAffairs;
 import ylj.house.user.UserAffairs;
 import ylj.mail.MailSender;
+import ylj.security.passwd.PasswdEncodeStrategy;
+import ylj.security.passwd.PasswdEncoder;
 
 @Controller("Do_RegistController")
 public class Do_RegistController {
@@ -140,26 +143,39 @@ public class Do_RegistController {
 			return null;
 		}
 
+		/*
 		if(ApplicantAffairs.isAccountExists(accountText)){
 			logger.error("Applicant Account is Exists:"+accountText);
 			setRedirectToRegPage(httpResponse,accountText+"  is Exists.");
 			return null;
 		}
-				
-	
+		*/
+		String passwdEncodeStrategy=PasswdEncodeStrategy.Strategy_E_1;
+		PasswdEncoder passwdEncoder=PasswdEncodeStrategy.getPasswdEncoder(passwdEncodeStrategy);
+		String passwdEncodedInDB=passwdEncoder.passwdEncode(passwdText);
+
 		
-		Applicant aApplicant = new Applicant();
 		String applyCode=ApplicantAffairs.generateApplyCode();
 		
-		aApplicant.setAccount(accountText);
-		aApplicant.setPasswdEncoded(passwdText);
-		aApplicant.setApplyCode(applyCode);
-		aApplicant.setApplyTime(System.currentTimeMillis());
-		aApplicant.setActivated(false);
-		aApplicant.setActivatedTime(-1);
+		Applicant applicant=ApplicantAffairs.getApplicant(accountText);
+		boolean exitApplicant=false;
 		
+		if(applicant==null){
+			applicant = new Applicant();
+			applicant.setAccount(accountText);
+			exitApplicant=false;
+		}else{		
+			exitApplicant=true;
+		}
 		
-		aApplicant.setApplyCodeMethod("EMAIL");
+	
+		applicant.setPasswdEncoded(passwdEncodedInDB);
+		applicant.setPasswdEncodeStrategy(passwdEncodeStrategy);
+		applicant.setApplyCode(applyCode);
+		applicant.setApplyTime(System.currentTimeMillis());
+		applicant.setActivated(false);
+		applicant.setActivatedTime(-1);
+		applicant.setApplyCodeMethod("EMAIL");
 		//send appcode to account email
 		//
 		String url=httpRequest.getRequestURL().toString();
@@ -171,8 +187,8 @@ public class Do_RegistController {
 		
 	//	MD5.Digest.
 		
-		String applyCodeEncoded=MessageDigestUtil.digest(applyCode+"."+SALT, MessageDigestUtil.Algorithm_MD5);
-		
+		String applyCodeEncoded=DigestUtils.md5Hex(applyCode+"."+SALT);
+	
 		params.add(new BasicNameValuePair("account", accountText));
 		params.add(new BasicNameValuePair("applyCode", applyCodeEncoded));
 	//	params.add(new BasicNameValuePair("applyCodeEncoded", applyCodeEncoded));
@@ -192,14 +208,21 @@ public class Do_RegistController {
 		boolean sendOk=true;
 		try{
 			mailSender.send(mailAddress, subject, content, contentType);
+			logger.info(" send active email success. to:"+accountText);
+			
 		}catch(Exception e){
 			e.printStackTrace();
 			sendOk=false;
 		}
-			
+		
+		
 		if(sendOk){
-			logger.info(" send active email success. to:"+accountText);
-			ApplicantAffairs.createApplicant(aApplicant);		
+			if(exitApplicant){
+				ApplicantAffairs.modfiyApplicant(applicant);
+			}else{
+				ApplicantAffairs.createApplicant(applicant);		
+			}
+				
 			setRedirectToRegPage(httpResponse," send active email success. to:"+accountText);		
 		}else{
 			logger.error(" send active email failed. to:"+accountText);
@@ -214,6 +237,7 @@ public class Do_RegistController {
 			@RequestParam("applyCode") String applyCodeEncoded,	
 			HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
 		
+		
 		Applicant userApplicant=ApplicantAffairs.getApplicant(account);
 		if(userApplicant==null){
 			setRedirectToRegPage( httpResponse, "激活失败");
@@ -225,8 +249,8 @@ public class Do_RegistController {
 			return null;
 		}
 		
-		
-		String expectApplyCodeEncoded=MessageDigestUtil.digest(userApplicant.getApplyCode()+"."+SALT, MessageDigestUtil.Algorithm_MD5);
+	
+		String expectApplyCodeEncoded=	DigestUtils.md5Hex(userApplicant.getApplyCode()+"."+SALT);
 		
 		if(expectApplyCodeEncoded.equals(applyCodeEncoded)){
 			ApplicantAffairs.activateUser(account);
