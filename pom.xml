@@ -160,13 +160,13 @@
 		</dependency>
 		
 		
-	<!--  <dependency>
+  	<dependency>
 			<groupId>ylj</groupId>
 			<artifactId>house</artifactId>
 			<version>1.2.5</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/house-1.2.5.jar</systemPath>
-		</dependency> -->	
+		</dependency> 
 	</dependencies>
 
 

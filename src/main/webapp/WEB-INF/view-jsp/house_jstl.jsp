@@ -31,7 +31,20 @@
 	</h2>
 
 	
+	
+	<form name="houseSaleFind" action="./house_jstl" method="get" >
+	
+			楼盘：<input type="text" name="propertyId" value="${propertyId}" />
+			开始日期：<input type="date" name="dateFrom" value="${dateFrom}"/>
+			截止日期：<input type="date" name="dateTo" value="${dateTo}"/>
+			
+			<input type="submit" value="查询" />
+			
+	</form>
 
+	
+	
+	
 	<c:if test="${not empty dailyStates}">
 
 		<ul>

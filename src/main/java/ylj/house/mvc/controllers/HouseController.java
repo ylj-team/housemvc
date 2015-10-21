@@ -111,6 +111,9 @@ public class HouseController {
 		List<DaySaledHouse> dayStates= DaySaledHouseDBUtil.queryDaySaledHouse(propertyId, dateFrom,dateTo);	
 		
 		model.addAttribute("dailyStates", dayStates);
+		model.addAttribute("propertyId", propertyId);
+		model.addAttribute("dateFrom", dateFrom);
+		model.addAttribute("dateTo", dateTo);
 		// model.addAttribute("dailySigneds", dailySigneds);
 		// model.addAttribute("states", states);
 
