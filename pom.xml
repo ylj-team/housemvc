@@ -16,7 +16,9 @@
 
 		<spring.version>3.2.2.RELEASE</spring.version>
 		<jstl.version>1.2</jstl.version>
-
+		<jpa.hibernate.version>5.0.1.Final</jpa.hibernate.version>
+		
+		
 	</properties>
 
 
@@ -75,7 +77,17 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.31</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${jpa.hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${jpa.hibernate.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
@@ -139,13 +151,6 @@
 		</dependency>
 		
 		
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.0.1.Final</version>
-		</dependency>
-		
-	
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
