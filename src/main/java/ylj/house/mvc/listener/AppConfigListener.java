@@ -15,7 +15,7 @@ import ylj.house.mvc.controllers.dosomething.RSAUtils;
 import ylj.mail.MailSender;
 import ylj.security.passwd.PasswdEncodeStrategy;
 import ylj.utils.ConnectionUtil;
-import ylj.utils.jpa.EntityManagerHelper;
+import ylj.utils.EntityManagerHelper;
 
 public class AppConfigListener implements ServletContextListener{
 
