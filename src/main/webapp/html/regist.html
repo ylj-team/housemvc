@@ -1,0 +1,153 @@
+<html>
+<script language="JavaScript" type="text/javascript" src="./js/jsbn/jsbn.js"></script>
+<script language="JavaScript" type="text/javascript" src="./js/jsbn/prng4.js"></script>
+<script language="JavaScript" type="text/javascript" src="./js/jsbn/rng.js"></script>
+<script language="JavaScript" type="text/javascript" src="./js/jsbn/rsa.js"></script>
+<script language="JavaScript" type="text/javascript" src="./js/jsbn/base64.js"></script>
+
+<script language="JavaScript" type="text/javascript" src="./js/security/encryption.js"></script>
+
+
+<script language="JavaScript">
+
+
+
+function GetQueryString(name)
+{	
+	var svalue = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]*)(\&?)","i"));
+	return svalue ? svalue[1] : svalue;
+
+}
+	function isEmail(str){ 
+		var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/; 
+		return reg.test(str); 
+	} 
+
+	function compareNewPasswd() {
+	
+	
+	
+	}
+	
+	function onSubmit() {
+		
+		//alert("do_encrypt_input()");
+		console.log("do_encrypt_input()");
+		
+		
+
+		if(!isEmail(document.password_input.account.value)){
+			alert ("email格式不正确");	
+			return false;
+		}
+		
+		if (document.password_input.passwd.value === null||document.password_input.passwd.value.length==0)
+		{
+			alert ("密码不得为空");	
+			return false;
+		}
+		if (document.password_input.passwd.value!=document.password_input.passwd_agin.value)
+		{
+			alert ("新密码和确认密码不一致。");	
+			return false;
+		}
+
+		
+		
+		var accountCipherText = encrypt(document.password_input.account.value);
+		var newPasswdCipherText = encrypt(document.password_input.passwd.value);
+
+		console.log(document.password_input.account.value+"=>"+accountCipherText);
+		console.log(document.password_input.passwd.value+"=>"+newPasswdCipherText);
+		
+		document.password_input.account.value=accountCipherText;
+		document.password_input.passwd.value=newPasswdCipherText;
+		document.password_input.passwd_agin.value=newPasswdCipherText;
+		
+		//
+		//var nextUrl=GetQueryString("nextUrl");
+		//if (nextUrl === null)
+		//{
+		//	console.log("nextUrl===null");		
+		//}else{
+		//	document.login_input.nextUrl.value=nextUrl;
+		//}		
+		//console.log(document.login_input.passwd.value+"=>"+nextUrl);
+		
+		
+		//alert("alert ,wait to jump");
+		//alert ("成功");
+		
+		return true;
+	}
+	
+	function do_init() {
+		
+		//display message 
+		var message=GetQueryString("message");	
+		//var account=GetQueryString("account");	
+				
+		if (message === null)
+		{
+			console.log("message===null");		
+			
+		}else{
+			//console.log("window.location.search="+window.location.search);		
+			//console.log(decodeURI(window.location.search));		
+			
+			console.log("encodedMessage="+message);
+			var decodedMessage=decodeURIComponent(message);
+			console.log("decodedMessage="+decodedMessage);
+			
+			var element=document.getElementById("message");					
+			element.innerHTML="<font color='#FF0000' > =>"+decodedMessage+" </font>";
+			
+			alert (decodedMessage);	
+			
+		}
+	}
+</script>
+
+<head>
+<meta charset="UTF-8">
+<title>注册</title>
+</head>
+
+ <body onLoad='do_init();'>  
+
+	<h3>	
+		<a href="./login.html" >登陆</a>
+	</h3>
+
+	<form name="password_input"  action="./do_regist" method="post" onsubmit="return onSubmit()">
+		<p>
+			email account: <input type="text" name="account" />
+		</p>
+		<p>
+			new password : <input type="password" name="passwd" />
+		</p>
+		<p>
+			new password : <input type="password" name="passwd_agin" />
+		</p>
+		<p>
+			<img alt="captcha image" src="./do_captcha" />		
+		</p>
+		<p>
+			验证码: <input type="password" name="captchaToken" />
+		</p>
+		
+		<input type="submit" value="Submit"   />
+		
+		<!--  <input hidden type="button" value="encrypt" onclick="do_encrypt_input()" /> -->
+		
+		<p id="message" >
+			
+		</p>
+		
+	</form>
+	
+	<p hidden>jump to "login_jstl"</p>
+
+
+</body>
+</html>
