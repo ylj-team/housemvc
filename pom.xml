@@ -167,9 +167,9 @@
   	<dependency>
 			<groupId>ylj</groupId>
 			<artifactId>house</artifactId>
-			<version>1.2.5</version>
+			<version>2.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/house-1.2.5.jar</systemPath>
+			<systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/house-2.0.0.jar</systemPath>
 		</dependency> 
 	</dependencies>
 

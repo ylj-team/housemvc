@@ -26,28 +26,30 @@ import java.io.InputStreamReader;
 
 
 
+
+
 import javax.servlet.http.HttpSession;
 
-import ylj.house.tmsf.salestate.sync.DaySaledHouse;
-import ylj.house.tmsf.salestate.sync.DaySaledHouseDBUtil;
+import ylj.house.tmsf.data2.DaySaledHouse;
+import ylj.house.tmsf.data2.DaySaledHouseAffairs;
 import ylj.utils.ConnectionUtil;
 
-@Controller("HouseControl")
-public class HouseController {
+@Controller("PropertyController")
+public class PropertyController {
 
-	static Logger logger=LoggerFactory.getLogger(HouseController.class);
+	static Logger logger=LoggerFactory.getLogger(PropertyController.class);
 
 	
-	public HouseController() throws Exception {
+	public PropertyController() throws Exception {
 
-		System.out.println("HouseController created .");
+		System.out.println("PropertyController created .");
 
 	}
 
 	@SuppressWarnings("restriction")
 	
 	public void init() {
-		System.out.println("HouseController init ...");
+		System.out.println("PropertyController init ...");
 
 		// DOMConfigurator.configure(HouseController.class.getResource("/conf/log4j.xml"));
 
@@ -59,31 +61,6 @@ public class HouseController {
 
 	}
 
-	// http://localhost:8080/housemvc/house?propertyId=64897079&dateFrom=2015-07-18&dateTo=2015-07-20
-	@RequestMapping(value = "/house", method = RequestMethod.GET)
-	public String handleHouse(@RequestParam("propertyId") String propertyId, @RequestParam("dateFrom") String dateFrom, @RequestParam("dateTo") String dateTo,
-			Model model) {
-
-		// 0model.addAttribute("propertyId",propertyId);
-		// model.addAttribute("date", date);
-
-		System.out.println("     propertyId:" + propertyId);
-		System.out.println("       dateFrom:" + dateFrom);
-		System.out.println("         dateTo:" + dateTo);
-
-		// List<HouseDailySigned> dailySigneds =
-		// HouseDailySignedDBUtil.queryRecords(propertyId, dateFrom, dateTo);
-		// System.out.println(dailySigneds.size());
-		// List<HouseState> states =
-		// HouseStateDBUtil.querySaledHouseDay(propertyId, dateFrom +
-		// " 00:00:00", dateTo + " 24:00:00");
-
-		model.addAttribute("dailySigneds.size", 2);
-		// model.addAttribute("dailySigneds", dailySigneds);
-		// model.addAttribute("states", states);
-
-		return "house";
-	}
 
 	// http://localhost:8080/housemvc/house?propertyId=64897079&dateFrom=2015-07-18&dateTo=2015-07-20
 
@@ -91,7 +68,7 @@ public class HouseController {
 	
 	//http://localhost:8080/housemvc/house_jstl?propertyId=26201346&dateFrom=2015-08-17&dateTo=2015-08-17
 	//http://107.170.208.159:8080/housemvc/house_jstl?propertyId=26201346&dateFrom=2015-08-17&dateTo=2015-08-17
-	@RequestMapping(value = "/house_jstl", method = RequestMethod.GET)
+	@RequestMapping(value = "/property_jstl", method = RequestMethod.GET)
 	public String handleHouse_JSTL(@RequestParam("propertyId") String propertyId, @RequestParam("dateFrom") String dateFrom,
 			@RequestParam("dateTo") String dateTo, Model model,HttpSession session) {
 
@@ -107,8 +84,9 @@ public class HouseController {
 		System.out.println("       dateFrom:" + dateFrom);
 		System.out.println("         dateTo:" + dateTo);
 		
+	
 		
-		List<DaySaledHouse> dayStates= DaySaledHouseDBUtil.queryDaySaledHouse(propertyId, dateFrom,dateTo);	
+		List<DaySaledHouse> dayStates= 	DaySaledHouseAffairs.queryDaySaledHouse(propertyId, dateFrom,dateTo);	
 		
 		model.addAttribute("dailyStates", dayStates);
 		model.addAttribute("propertyId", propertyId);
@@ -117,9 +95,10 @@ public class HouseController {
 		// model.addAttribute("dailySigneds", dailySigneds);
 		// model.addAttribute("states", states);
 
-		return "house_jstl";
+		return "property_jstl";
 	}
 	
+	/*
 	
 	@RequestMapping(value = "/house_json", method = RequestMethod.GET,produces = "application/json; charset=utf-8")
 	@ResponseBody
@@ -143,4 +122,5 @@ public class HouseController {
 
 		return JSON.toJSONString(dayStates);
 	}
+	*/
 }

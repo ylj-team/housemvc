@@ -61,9 +61,9 @@ public class LoginFilter implements Filter {
 	}
 	
 	/*
-	 * 示例：
+	 * 绀轰緥锛�
 
-当前url：http://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn
+褰撳墠url锛歨ttp://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn
 
 request.getRequestURL() http://localhost:8080/CarsiLogCenter_new/idpstat.jsp
 request.getRequestURI() /CarsiLogCenter_new/idpstat.jsp
@@ -132,7 +132,7 @@ request.getQueryString()action=idp.sptopn
 		// }
 
 		// pass=true;
-
+		//pass=true;
 		logger.info("拦截 URI=" + httpRequest.getRequestURI() + " pass:" + pass);
 
 		if (!pass) {

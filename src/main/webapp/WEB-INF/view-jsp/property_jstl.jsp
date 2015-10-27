@@ -32,7 +32,7 @@
 
 	
 	
-	<form name="houseSaleFind" action="./house_jstl" method="get" >
+	<form name="houseSaleFind" action="./property_jstl" method="get" >
 	
 			楼盘：<input type="text" name="propertyId" value="${propertyId}" />
 			开始日期：<input type="date" name="dateFrom" value="${dateFrom}"/>

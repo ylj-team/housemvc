@@ -41,8 +41,11 @@ import com.alibaba.fastjson.JSON;
 
 import java.io.InputStreamReader;
 
-import ylj.house.tmsf.dailysigned.sync.HouseDailySigned;
-import ylj.house.tmsf.dailysigned.sync.HouseDailySignedDBUtil;
+
+
+
+import ylj.house.tmsf.data.salestate.PropertyDailySigned;
+import ylj.house.tmsf.data.salestate.PropertyDailySignedAffairs;
 import ylj.utils.ConnectionUtil;
 
 
@@ -80,81 +83,15 @@ public class DailySaleController {
 
 	}
 
-	@RequestMapping(value = "/daily", method = RequestMethod.GET)
-	public void handleDaily(@RequestParam(value="date",required=false) String date,HttpServletResponse response) {
-		//0model.addAttribute("propertyId",propertyId);
-	    //model.addAttribute("date", date);
-	
-		System.out.println("      date:"+date);
-		
 
-		if(date==null){
-			date=ISO_time_format.format(new Date(System.currentTimeMillis()));
-		}
-		
-		StringBuffer aStringBuffer=new StringBuffer();
-	
-		List<HouseDailySigned> dailySigneds= HouseDailySignedDBUtil.queryRecords(date);
-		System.out.println(dailySigneds.size());
-		aStringBuffer.append(dailySigneds.size()+"\n");
-		
-		Map<String,List<HouseDailySigned>> propertySaleRecords=new TreeMap<String,List<HouseDailySigned>>();
-		for(HouseDailySigned dailySigned:dailySigneds){
-			
-			
-			//http://localhost:8080/housemvc/house?propertyId=64897079&date=2015-07-13
-			
-			
-			List<HouseDailySigned> saleRecords=propertySaleRecords.get(dailySigned.propertyName);
-			if(saleRecords==null){
-				saleRecords=new LinkedList<HouseDailySigned>();
-				propertySaleRecords.put(dailySigned.propertyName, saleRecords);
-			}
-			
-			saleRecords.add(dailySigned);
-		}
-		
-		//http://localhost:8080/housemvc/house?propertyId=64897079&date=2015-07-13
-		
-		for(Entry<String,List<HouseDailySigned>> entry:propertySaleRecords.entrySet()){
-			aStringBuffer.append("--------------- "+entry.getKey()+" -------------\n");
-			String url=null;
-			for(HouseDailySigned dailySigned:entry.getValue()){
-				
-				 url="http://localhost:8080/housemvc/house?propertyId="+dailySigned.propertyId+"&dateFrom="+date+"&dateTo="+date;
-				
-				aStringBuffer.append(" S:"+dailySigned.signedNumber+" R:"+dailySigned.reservedNumber+" "+dailySigned.signedArea+"m "+dailySigned.signedAvgPrice+"/m "+dailySigned.signedTime+"\n");			
-			}
-			aStringBuffer.append("\n");
-			aStringBuffer.append(url);
-			aStringBuffer.append("\n");
-		}
-		
-		
-		try {
-			 ServletOutputStream  sos=response.getOutputStream();
-			 OutputStreamWriter osw=new OutputStreamWriter(sos,"utf-8");
-			
-			osw.append(" date:"+date+"\n");
-			osw.append(aStringBuffer.toString());
-			osw.flush();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    return ;
-	}
-	
 	
 	//http://localhost:8080/housemvc/daily?date=2015-07-10
 	    public static class SignedRecord{
+	    	    		    	
+	    	PropertyDailySigned houseDailySigned;
 	    	
 	    	
-	    	
-	    	HouseDailySigned houseDailySigned;
-	    	
-	    	
-	    	public SignedRecord(HouseDailySigned houseDailySigned){
+	    	public SignedRecord(PropertyDailySigned houseDailySigned){
 	    		this.houseDailySigned=houseDailySigned;
 	    	}
 			
@@ -236,18 +173,19 @@ public class DailySaleController {
 			
 		//	StringBuffer aStringBuffer=new StringBuffer();
 		
-			List<HouseDailySigned> dailySigneds= HouseDailySignedDBUtil.queryRecords(date);
+	
+			List<PropertyDailySigned> dailySigneds=PropertyDailySignedAffairs.getRecordsOfDay(date);
 			System.out.println(dailySigneds.size());
 		//	aStringBuffer.append(dailySigneds.size()+"\n");
 			logger.info("total dailySigned record: "+dailySigneds.size());
 			
 			
-			Map<String,List<HouseDailySigned>> propertySaleRecords=new TreeMap<String,List<HouseDailySigned>>();
-			for(HouseDailySigned dailySigned:dailySigneds){
+			Map<String,List<PropertyDailySigned>> propertySaleRecords=new TreeMap<String,List<PropertyDailySigned>>();
+			for(PropertyDailySigned dailySigned:dailySigneds){
 	
-				List<HouseDailySigned> saleRecords=propertySaleRecords.get(dailySigned.propertyName);
+				List<PropertyDailySigned> saleRecords=propertySaleRecords.get(dailySigned.propertyName);
 				if(saleRecords==null){
-					saleRecords=new LinkedList<HouseDailySigned>();
+					saleRecords=new LinkedList<PropertyDailySigned>();
 					propertySaleRecords.put(dailySigned.propertyName, saleRecords);
 				}
 				
@@ -258,7 +196,7 @@ public class DailySaleController {
 			
 			List<PropertySignedRecord> propertyRecords=new LinkedList<PropertySignedRecord>();
 			
-			for(Entry<String,List<HouseDailySigned>> entry:propertySaleRecords.entrySet()){
+			for(Entry<String,List<PropertyDailySigned>> entry:propertySaleRecords.entrySet()){
 		//		aStringBuffer.append("--------------- "+entry.getKey()+" -------------\n");
 				String propertyName=entry.getKey();
 				String url=null;
@@ -270,9 +208,9 @@ public class DailySaleController {
 				List<SignedRecord> signedRecords=new LinkedList<SignedRecord>();
 				
 				
-				for(HouseDailySigned dailySigned:entry.getValue()){
+				for(PropertyDailySigned dailySigned:entry.getValue()){
 					
-					 url="/housemvc/house_jstl?propertyId="+dailySigned.propertyId+"&dateFrom="+date+"&dateTo="+date;
+					 url="/housemvc/property_jstl?propertyId="+dailySigned.propertyId+"&dateFrom="+date+"&dateTo="+date;
 					 propertyId=dailySigned.propertyId;
 					 propertyTypeCode=dailySigned.propertyTypeCode;
 					 district=dailySigned.district;
@@ -304,6 +242,8 @@ public class DailySaleController {
 		   
 			return "daily_jstl";
 		}
+		
+		/*
 		@RequestMapping(value = "/daily_json", method = RequestMethod.GET,produces = "application/json; charset=utf-8")
 		@ResponseBody
 		public String handleDaily_JSON(@RequestParam("date") String date) {
@@ -378,4 +318,5 @@ public class DailySaleController {
 		   
 			return JSON.toJSONString(propertyRecords);
 		}
+		*/
 }
