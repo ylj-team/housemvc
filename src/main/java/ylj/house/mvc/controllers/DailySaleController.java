@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -40,6 +41,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 
 import java.io.InputStreamReader;
+
+
 
 
 
@@ -154,11 +157,11 @@ public class DailySaleController {
 		
 		//http://localhost:8080/housemvc/daily_jstl?date=2015-08-17
 		@RequestMapping(value = "/daily_jstl", method = RequestMethod.GET)
-		public String handleDaily_JSTL(@RequestParam(value="date",required=false) String date,Model model, HttpSession session) {
+		public String handleDaily_JSTL(@RequestParam(value="date",required=false) String date,Model model, HttpSession session) throws Exception {
 			//0model.addAttribute("propertyId",propertyId);
 		    //model.addAttribute("date", date);
 		
-			System.out.println("      date:"+date);	
+			//System.out.println("      date:"+date);	
 			if(date==null){
 				date=ISO_time_format.format(new Date(System.currentTimeMillis()));			
 				String redictUrl="daily_jstl?date="+date;
@@ -170,6 +173,7 @@ public class DailySaleController {
 			String loginedAccount = (String) session.getAttribute("account");
 			session.setAttribute("account", loginedAccount);
 
+			
 			
 		//	StringBuffer aStringBuffer=new StringBuffer();
 		
@@ -193,6 +197,10 @@ public class DailySaleController {
 			}
 			
 			//http://localhost:8080/housemvc/house?propertyId=64897079&date=2015-07-13
+			String dateTo=date;
+			long dateTime=ISO_time_format.parse(date).getTime();
+			long dateFromTime=dateTime-30*24*3600*1000;
+			String dateFrom=ISO_time_format.format(new Date(dateFromTime));
 			
 			List<PropertySignedRecord> propertyRecords=new LinkedList<PropertySignedRecord>();
 			
@@ -205,12 +213,11 @@ public class DailySaleController {
 				String district=null;
 				String signedDate=null;
 				
-				List<SignedRecord> signedRecords=new LinkedList<SignedRecord>();
-				
+				List<SignedRecord> signedRecords=new LinkedList<SignedRecord>();			
 				
 				for(PropertyDailySigned dailySigned:entry.getValue()){
 					
-					 url="/housemvc/property_jstl?propertyId="+dailySigned.propertyId+"&dateFrom="+date+"&dateTo="+date;
+					 url="/housemvc/property_jstl?propertyId="+dailySigned.propertyId+"&dateFrom="+dateFrom+"&dateTo="+dateTo;
 					 propertyId=dailySigned.propertyId;
 					 propertyTypeCode=dailySigned.propertyTypeCode;
 					 district=dailySigned.district;

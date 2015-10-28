@@ -43,14 +43,14 @@ public class Do_LoginController {
 	private void setRedirectToLogin(HttpServletResponse httpResponse, String nextUrl,String message) throws IOException {
 		//
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// params.add(new BasicNameValuePair("message","账号密码错误"));
+		// params.add(new BasicNameValuePair("message","璐﹀彿瀵嗙爜閿欒"));
 		
 		// errorMessage=errorMessage.replaceAll(" ", "%20");
 		params.add(new BasicNameValuePair("message", message));
 		params.add(new BasicNameValuePair("nextUrl", nextUrl));
 
-		// URLEncode.encode 会将空格转换为“+”，但是“+”又不在BBBBBBBBBBBBBBB说明的
-		// 空格编码为"+" 而不是 %20
+		// URLEncode.encode 浼氬皢绌烘牸杞崲涓衡��+鈥濓紝浣嗘槸鈥�+鈥濆張涓嶅湪BBBBBBBBBBBBBBB璇存槑鐨�
+		// 绌烘牸缂栫爜涓�"+" 鑰屼笉鏄� %20
 		String query = URLEncodedUtils.format(params, "UTF-8");
 		query = query.replace("+", "%20");
 		// URLEncodedUtils.f
@@ -73,15 +73,15 @@ public class Do_LoginController {
 	private void setRedirectToLoginPasswdChange(HttpServletResponse httpResponse,String account, String message) throws IOException {
 		//
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// params.add(new BasicNameValuePair("message","账号密码错误"));
+		// params.add(new BasicNameValuePair("message","璐﹀彿瀵嗙爜閿欒"));
 	
 		// errorMessage=errorMessage.replaceAll(" ", "%20");
 		params.add(new BasicNameValuePair("account", account));
 		params.add(new BasicNameValuePair("message", message));
 		//params.add(new BasicNameValuePair("message", nextUrl));
 
-		// URLEncode.encode 会将空格转换为“+”，但是“+”又不在BBBBBBBBBBBBBBB说明的
-		// 空格编码为"+" 而不是 %20
+		// URLEncode.encode 浼氬皢绌烘牸杞崲涓衡��+鈥濓紝浣嗘槸鈥�+鈥濆張涓嶅湪BBBBBBBBBBBBBBB璇存槑鐨�
+		// 绌烘牸缂栫爜涓�"+" 鑰屼笉鏄� %20
 		String query = URLEncodedUtils.format(params, "UTF-8");
 		query = query.replace("+", "%20");
 		// URLEncodedUtils.f
@@ -139,7 +139,7 @@ public class Do_LoginController {
 		
 		User user=UserAffairs.getUser(accountText);
 		if(user==null){
-			setRedirectToLoginPasswdChange(httpResponse,accountText, "账户不存在："+accountText);
+			setRedirectToLoginPasswdChange(httpResponse,accountText, "账户不存在 "+accountText);
 			logger.info("check old passwd failed ,account not exits"+accountText );
 			return null;
 		}
@@ -147,7 +147,7 @@ public class Do_LoginController {
 		PasswdEncoder	passwdEncoder=PasswdEncodeStrategy.getPasswdEncoder(user.getPasswdEncodeStrategy());
 		
 		if(passwdEncoder==null){
-			setRedirectToLoginPasswdChange(httpResponse,accountText, "原密码加密策略错误 ,Strategy："+user.getPasswdEncodeStrategy());
+			setRedirectToLoginPasswdChange(httpResponse,accountText, "获取策略加密器失败："+user.getPasswdEncodeStrategy());
 			logger.error("check old passwd  ,no Strategy find,Strategy："+user.getPasswdEncodeStrategy());
 			return null;
 		}
@@ -155,7 +155,7 @@ public class Do_LoginController {
 		String encodedPassed=passwdEncoder.passwdEncode(passwdText);
 		
 		if(!encodedPassed.equals(user.getPasswdEncoded())){
-			setRedirectToLoginPasswdChange(httpResponse, accountText,"原账户密码不正确");
+			setRedirectToLoginPasswdChange(httpResponse, accountText,"原密码不正确");
 			logger.info("check old passwd ,password not match.");
 			return null;
 		}
@@ -176,7 +176,7 @@ public class Do_LoginController {
 			}catch(Exception e){
 				
 				logger.error("update new Passwd failed ");
-				setRedirectToLoginPasswdChange( httpResponse, accountText, "设置新密码失败");
+				setRedirectToLoginPasswdChange( httpResponse, accountText, "密码修改失败");
 			}
 			
 	
@@ -200,7 +200,7 @@ public class Do_LoginController {
 				model.addAttribute("account", loginedAccount);		
 				return "user_jstl";
 			}else{
-				setRedirectToLogin( httpResponse,"/user","请先登陆");
+				setRedirectToLogin( httpResponse,"/user","未登陆");
 				return "user_jstl";
 			}
 					
@@ -281,7 +281,7 @@ public class Do_LoginController {
 	
 		User user=UserAffairs.getUser(accountText);
 		if(user==null){
-			setRedirectToLogin(httpResponse, nextUrl,"账户不存在："+accountText);
+			setRedirectToLogin(httpResponse, nextUrl,"账户不存在"+accountText);
 			logger.info("login failed ,account not exits"+accountText );
 			return null;
 		}
@@ -291,7 +291,7 @@ public class Do_LoginController {
 		PasswdEncoder	passwdEncoder=PasswdEncodeStrategy.getPasswdEncoder(user.getPasswdEncodeStrategy());
 		
 		if(passwdEncoder==null){
-			setRedirectToLogin(httpResponse, nextUrl,"密码加密策略错误 ,Strategy："+user.getPasswdEncodeStrategy());
+			setRedirectToLogin(httpResponse, nextUrl,"获取策略加密器失败："+user.getPasswdEncodeStrategy());
 			logger.error("login failed ,no Strategy find,Strategy："+user.getPasswdEncodeStrategy());
 			return null;
 		}
@@ -299,7 +299,7 @@ public class Do_LoginController {
 		String encodedPassed=passwdEncoder.passwdEncode(passwdText);
 		
 		if(!encodedPassed.equals(user.getPasswdEncoded())){
-			setRedirectToLogin(httpResponse, nextUrl,"账户密码不正确");
+			setRedirectToLogin(httpResponse, nextUrl,"密码不正确");
 			logger.info("login failed ,password not match.");
 			return null;
 		}
@@ -307,7 +307,7 @@ public class Do_LoginController {
 		
 		
 		if(user.getState()!=0){
-			setRedirectToLogin(httpResponse, nextUrl,"账户状态不可以 state:"+user.getState());
+			setRedirectToLogin(httpResponse, nextUrl,"用户状态可用 state:"+user.getState());
 			logger.info("user state:"+user.getState());
 
 			return null;
@@ -316,7 +316,7 @@ public class Do_LoginController {
 		logger.info("login success :" + user.getAccount());
 
 		
-		// 设置session
+		// 璁剧疆session
 		logger.info("set session, login=true");
 		// mins
 		session.setMaxInactiveInterval(7*24 * 60);

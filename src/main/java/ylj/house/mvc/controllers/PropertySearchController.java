@@ -125,7 +125,7 @@ public class PropertySearchController {
 			 searchRecords[i].city=properties[i].getCity();
 			 searchRecords[i].developer =properties[i].getDeveloper();
 			 
-			 String url="./house_jstl?propertyId="+ searchRecords[i].propertyId+"&dateFrom="+dateFrom+"&dateTo="+dateTo;
+			 String url="./property_jstl?propertyId="+ searchRecords[i].propertyId+"&dateFrom="+dateFrom+"&dateTo="+dateTo;
 				
 			 searchRecords[i].jumpUrl=url;
 			 
