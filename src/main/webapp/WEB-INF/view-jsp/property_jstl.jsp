@@ -5,7 +5,7 @@
 
 <html>
 <head>
-<title>StateChangedHouse_两个DIV并排</title>
+<title>楼盘签约详情</title>
 
 
 <style>
@@ -25,7 +25,7 @@
 </head>
 <body>
 	<h2>
-		<a href="./user" ><c:out value="=>${account}" /></a>
+		<a href="./userIdx" ><c:out value="=>${account}" /></a>
 		<a href="./do_logout" >logout</a>
 	
 	</h2>

@@ -76,16 +76,10 @@ public class PropertyController {
 		// model.addAttribute("date", date);
 		
 		String loginedAccount = (String) session.getAttribute("account");
-		session.setAttribute("account", loginedAccount);
+		//session.setAttribute("account", loginedAccount);
 
-	
-
-		System.out.println("     propertyId:" + propertyId);
-		System.out.println("       dateFrom:" + dateFrom);
-		System.out.println("         dateTo:" + dateTo);
-		
-	
-		
+		logger.info(loginedAccount+" query.     propertyId:" + propertyId+" dateFrom:" + dateFrom+"   dateTo:" + dateTo);
+			
 		List<DaySaledHouse> dayStates= 	DaySaledHouseAffairs.queryDaySaledHouse(propertyId, dateFrom,dateTo);	
 		
 		model.addAttribute("dailyStates", dayStates);

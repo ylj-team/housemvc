@@ -5,7 +5,7 @@
 
 <html>
 <head>
-<title>PropertySearch</title>
+<title>楼盘检索</title>
 
 
 <style>
@@ -21,7 +21,7 @@
 </head>
 <body>
 	<h2>
-		<a href="./user" ><c:out value="=>${account}" /></a>
+		<a href="./userIdx" ><c:out value="=>${account}" /></a>
 		<a href="./do_logout" >logout</a>
 	
 	</h2>

@@ -5,15 +5,24 @@
 
 <html>
 <head>
-<title>DailySignedRecords</title>
+<title>每日签约</title>
 </head>
 <body>
 	<h2>
-		<a href="./user" ><c:out value="=>${account}" /></a>
+		<a href="./userIdx" ><c:out value="=>${account}" /></a>
 		<a href="./do_logout" >logout</a>
 	</h2>
 	
 
+
+			
+	<h3>
+		<p>		
+			<c:out value="每日签约" /></a>
+			<c:out value="${cityName}(${date})" /></a>
+		</p>
+	</h3>
+	
 
 	<c:if test="${not empty propertyRecords}">
 

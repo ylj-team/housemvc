@@ -43,14 +43,11 @@ public class Do_LoginController {
 	private void setRedirectToLogin(HttpServletResponse httpResponse, String nextUrl,String message) throws IOException {
 		//
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// params.add(new BasicNameValuePair("message","璐﹀彿瀵嗙爜閿欒"));
 		
 		// errorMessage=errorMessage.replaceAll(" ", "%20");
 		params.add(new BasicNameValuePair("message", message));
 		params.add(new BasicNameValuePair("nextUrl", nextUrl));
 
-		// URLEncode.encode 浼氬皢绌烘牸杞崲涓衡��+鈥濓紝浣嗘槸鈥�+鈥濆張涓嶅湪BBBBBBBBBBBBBBB璇存槑鐨�
-		// 绌烘牸缂栫爜涓�"+" 鑰屼笉鏄� %20
 		String query = URLEncodedUtils.format(params, "UTF-8");
 		query = query.replace("+", "%20");
 		// URLEncodedUtils.f
@@ -188,23 +185,7 @@ public class Do_LoginController {
 					
 	}
 	
-	@RequestMapping(value = "/user", method = { RequestMethod.POST, RequestMethod.GET })
-	public String handleUser(HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
-		
 
-			Boolean login = (Boolean) session.getAttribute("login");
-			String loginedAccount = (String) session.getAttribute("account");
-
-			// already logined
-			if (login != null && login == true) {
-				model.addAttribute("account", loginedAccount);		
-				return "user_jstl";
-			}else{
-				setRedirectToLogin( httpResponse,"/user","未登陆");
-				return "user_jstl";
-			}
-					
-	}
 	
 	@RequestMapping(value = "/do_login", method = { RequestMethod.POST, RequestMethod.GET })
 	public String handleLogin(@RequestParam("account") String accountEncoded, @RequestParam( "passwd") String passwdEncoded,
@@ -329,8 +310,10 @@ public class Do_LoginController {
 			logger.info("Redirect to nextUrl:" + nextUrl);
 			return null;
 		} else {		
-			model.addAttribute("account", accountText);		
-			return "user_jstl";
+			
+			httpResponse.sendRedirect("./userIdx");
+			logger.info("Redirect to userIdx" );
+			return null;
 		}
 
 	
