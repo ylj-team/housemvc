@@ -197,24 +197,26 @@ public class DailySaleController {
 						
 		//	StringBuffer aStringBuffer=new StringBuffer();
 		
-			String cityName="È«²¿";
+			String cityName="å…¨éƒ¨";
 			
 			List<PropertyDailySigned> dailySigneds=null;
 			if(null==city){
 				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDay(date);
-				cityName="È«²¿";
+				city="all";
+				cityName="å…¨éƒ¨";
 			}else if ("hz".equals(city.toLowerCase())){
 				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDaySids(date, sidsOfHZ);
-				cityName="º¼ÖİÖ÷³ÇÇø";
+				cityName="ä¸»åŸåŒº";
 			}else if ("xs".equals(city.toLowerCase())){
 				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDaySids(date, sidsOfXS);
-				cityName="ÏôÉ½Çø";
+				cityName="è§å±±";
 			}else if ("yh".equals(city.toLowerCase())){
 				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDaySids(date, sidsOfYH);
-				cityName="Óàº¼Çø";
+				cityName="ä½™æ­";
 			}else{
 				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDay(date);
-				cityName="È«²¿";
+				cityName="å…¨éƒ¨";
+				city="all";
 			}
 			
 		//	System.out.println(dailySigneds.size());
@@ -287,6 +289,7 @@ public class DailySaleController {
 			
 			model.addAttribute("propertyRecords", propertyRecords);
 			model.addAttribute("cityName", cityName);
+			model.addAttribute("city", city);
 			model.addAttribute("date", date);
 
 		   

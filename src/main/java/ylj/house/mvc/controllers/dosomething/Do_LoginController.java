@@ -197,8 +197,10 @@ public class Do_LoginController {
 
 		// already logined
 		if (login != null && login == true) {
-			model.addAttribute("account", loginedAccount);
-			return "user_jstl";
+
+			httpResponse.sendRedirect("./userIdx");
+			logger.info("Redirect to userIdx" );
+			return null;
 		}
 
 		//check captchaToken

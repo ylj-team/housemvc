@@ -64,7 +64,7 @@ public class Do_UserIndxController {
 				model.addAttribute("account", loginedAccount);		
 				return "user_index_jstl";
 			}else{
-				setRedirectToLogin( httpResponse,"/userIdx","δ��½");
+				setRedirectToLogin( httpResponse,"/userIdx","未登陆");
 				return null;
 			}
 					
