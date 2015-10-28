@@ -61,9 +61,9 @@ public class LoginFilter implements Filter {
 	}
 	
 	/*
-	 * 示例：
+	 * 绀轰緥锛�
 
-当前url：http://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn
+褰撳墠url锛歨ttp://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn
 
 request.getRequestURL() http://localhost:8080/CarsiLogCenter_new/idpstat.jsp
 request.getRequestURI() /CarsiLogCenter_new/idpstat.jsp
@@ -101,8 +101,13 @@ request.getQueryString()action=idp.sptopn
 			if (cookies != null) {
 				for (int i = 0; i < cookies.length; i++) {
 
+
 				//	System.out.println("cookie [" + i + "] " + cookies[i].getName() + ":" + cookies[i].getValue() + " Domain=" + cookies[i].getDomain() + " Path="
 				//			+ cookies[i].getPath() + " Comment=" + cookies[i].getComment() + " MaxAge=" + cookies[i].getMaxAge() + " Version=" + cookies[i].getVersion());
+
+					logger.info("cookie [" + i + "] " + cookies[i].getName() + ":" + cookies[i].getValue() + " Domain=" + cookies[i].getDomain() + " Path="
+							+ cookies[i].getPath() + " Comment=" + cookies[i].getComment() + " MaxAge=" + cookies[i].getMaxAge() + " Version=" + cookies[i].getVersion());
+
 					if (cookies[i].getName().equals("")) {
 						break;
 					}
@@ -131,8 +136,7 @@ request.getQueryString()action=idp.sptopn
 		// }
 
 		// pass=true;
-		pass = true;
-		
+
 		logger.info("拦截 URI=" + httpRequest.getRequestURI() + " pass:" + pass);
 
 		if (!pass) {

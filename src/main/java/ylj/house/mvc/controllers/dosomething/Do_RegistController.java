@@ -46,9 +46,9 @@ public class Do_RegistController {
 		System.out.println("MailSender init ...");			
 		
 		String smtpHost = "smtp.163.com";
-		// 发件人的账号
+		// 鍙戜欢浜虹殑璐﹀彿
 		String mailUser = "yanglujun2007510@163.com";
-		// 访问SMTP服务时需要提供的密码
+		// 璁块棶SMTP鏈嶅姟鏃堕渶瑕佹彁渚涚殑瀵嗙爜
 		String mailPassword = "405628494";
 				
 		mailSender = new MailSender();
@@ -240,12 +240,12 @@ public class Do_RegistController {
 		
 		Applicant userApplicant=ApplicantAffairs.getApplicant(account);
 		if(userApplicant==null){
-			setRedirectToRegPage( httpResponse, "激活失败");
+			setRedirectToRegPage( httpResponse, "激活失败，未申请账户："+account);
 			return null;
 		}
 		
 		if(userApplicant.isActivated()){
-			setRedirectToRegPage( httpResponse, "已激活账户");
+			setRedirectToRegPage( httpResponse, "已激活账户："+account);
 			return null;
 		}
 		
@@ -254,10 +254,10 @@ public class Do_RegistController {
 		
 		if(expectApplyCodeEncoded.equals(applyCodeEncoded)){
 			ApplicantAffairs.activateUser(account);
-			setRedirectToLogin( httpResponse, "激活成功 "+account);
+			setRedirectToLogin( httpResponse, "激活成功"+account);
 			return null;
 		}else{
-			 setRedirectToRegPage( httpResponse, "激活失败，激活码错误 "+account);
+			 setRedirectToRegPage( httpResponse, "激活失败，激活码不正确： "+account);
 			return null;
 		}
 		
@@ -265,14 +265,14 @@ public class Do_RegistController {
 	private void setRedirectToLogin(HttpServletResponse httpResponse, String message) throws IOException {
 		//
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// params.add(new BasicNameValuePair("message","账号密码错误"));
+		// params.add(new BasicNameValuePair("message","璐﹀彿瀵嗙爜閿欒"));
 
 		// errorMessage=errorMessage.replaceAll(" ", "%20");
 		params.add(new BasicNameValuePair("message", message));
 
 
-		// URLEncode.encode 会将空格转换为“+”，但是“+”又不在BBBBBBBBBBBBBBB说明的
-		// 空格编码为"+" 而不是 %20
+		// URLEncode.encode 浼氬皢绌烘牸杞崲涓衡��+鈥濓紝浣嗘槸鈥�+鈥濆張涓嶅湪BBBBBBBBBBBBBBB璇存槑鐨�
+		// 绌烘牸缂栫爜涓�"+" 鑰屼笉鏄� %20
 		String query = URLEncodedUtils.format(params, "UTF-8");
 		query = query.replace("+", "%20");
 		// URLEncodedUtils.f

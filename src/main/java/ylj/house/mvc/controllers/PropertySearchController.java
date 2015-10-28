@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ylj.house.tmsf.property.Property;
+
+
+import ylj.house.tmsf.data.property.Property;
 import ylj.housesearch.sql.SQLSearcherOfProperty;
 
 
@@ -123,7 +125,7 @@ public class PropertySearchController {
 			 searchRecords[i].city=properties[i].getCity();
 			 searchRecords[i].developer =properties[i].getDeveloper();
 			 
-			 String url="./house_jstl?propertyId="+ searchRecords[i].propertyId+"&dateFrom="+dateFrom+"&dateTo="+dateTo;
+			 String url="./property_jstl?propertyId="+ searchRecords[i].propertyId+"&dateFrom="+dateFrom+"&dateTo="+dateTo;
 				
 			 searchRecords[i].jumpUrl=url;
 			 
@@ -141,14 +143,14 @@ public class PropertySearchController {
 		// 0model.addAttribute("propertyId",propertyId);
 		// model.addAttribute("date", date);		
 		
-	//	String query="万科";
+	//	String query="涓囩";
 		//long total=aSQLSearcherOfProperty.searchByPropertyNameTotalHit(query);
 		 
 		 	byte bb[]; 
 		 	if(query!=null){
 		 		
-		 		bb = query.getBytes("ISO-8859-1"); //以"ISO-8859-1"方式解析name字符串 
-		 		query= new String(bb, "UTF-8"); //再用"utf-8"格式表示name     
+		 		bb = query.getBytes("ISO-8859-1"); //浠�"ISO-8859-1"鏂瑰紡瑙ｆ瀽name瀛楃涓� 
+		 		query= new String(bb, "UTF-8"); //鍐嶇敤"utf-8"鏍煎紡琛ㄧずname     
 	        
 		 		Property[] properties=aSQLSearcherOfProperty.searchByPropertyName(query);
 		 		

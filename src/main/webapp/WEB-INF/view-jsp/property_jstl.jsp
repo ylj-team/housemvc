@@ -5,7 +5,7 @@
 
 <html>
 <head>
-<title>StateChangedHouse_两个DIV并排</title>
+<title>楼盘签约详情</title>
 
 
 <style>
@@ -25,14 +25,14 @@
 </head>
 <body>
 	<h2>
-		<a href="./user" ><c:out value="=>${account}" /></a>
+		<a href="./userIdx" ><c:out value="=>${account}" /></a>
 		<a href="./do_logout" >logout</a>
 	
 	</h2>
 
 	
 	
-	<form name="houseSaleFind" action="./house_jstl" method="get" >
+	<form name="houseSaleFind" action="./property_jstl" method="get" >
 	
 			楼盘：<input type="text" name="propertyId" value="${propertyId}" />
 			开始日期：<input type="date" name="dateFrom" value="${dateFrom}"/>

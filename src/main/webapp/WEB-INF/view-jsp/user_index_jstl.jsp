@@ -5,13 +5,12 @@
 
 <html>
 <head>
-<title>Login</title>
+<title>用户首页</title>
 
 </head>
 <body>
 	<h3>
-		<a href="./user" ><c:out value="=>${account}" /></a>
-		
+		<a href="./userIdx" ><c:out value="=>${account}" /></a>	
 		<a href="./loginpasswordchange.html?account=${account}" >修改密码</a>
 		<a href="./do_logout" >logout</a>
 	</h3>
@@ -21,7 +20,10 @@
 		<c:out value="-----------------------------------" />
 	</h2>	
 	<p>
-		<a href="./daily_jstl" >每日签约</a>
+		<a href="./daily_jstl" >今日签约（全部）</a>
+		<a href="./daily_jstl?city=hz" > 今日签约（主城区）</a>
+		<a href="./daily_jstl?city=xs" > 今日签约（萧山）</a>
+		<a href="./daily_jstl?city=yh" > 今日签约（余杭）</a>
 	</p>
 	
 	

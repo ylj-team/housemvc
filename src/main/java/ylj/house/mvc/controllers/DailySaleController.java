@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -41,8 +42,14 @@ import com.alibaba.fastjson.JSON;
 
 import java.io.InputStreamReader;
 
-import ylj.house.tmsf.dailysigned.sync.HouseDailySigned;
-import ylj.house.tmsf.dailysigned.sync.HouseDailySignedDBUtil;
+
+
+
+
+
+
+import ylj.house.tmsf.data.salestate.PropertyDailySigned;
+import ylj.house.tmsf.data.salestate.PropertyDailySignedAffairs;
 import ylj.utils.ConnectionUtil;
 
 
@@ -54,6 +61,11 @@ public class DailySaleController {
 
 	TimeZone zone =null;
 	SimpleDateFormat ISO_time_format=null;
+	
+	List<String> sidsOfHZ;
+	List<String> sidsOfXS;
+	List<String> sidsOfYH;
+	
 	public DailySaleController() throws Exception{
 		
 		System.out.println("DailySaleController created .");
@@ -63,6 +75,26 @@ public class DailySaleController {
 		ISO_time_format = new SimpleDateFormat("yyyy-MM-dd");
 		ISO_time_format.setTimeZone(zone);
 	
+		
+		
+		 sidsOfHZ=new LinkedList<String>();		
+			sidsOfHZ.add("33");
+			sidsOfHZ.add("330102");
+			sidsOfHZ.add("330103");
+			sidsOfHZ.add("330104");
+			sidsOfHZ.add("330105");		
+			sidsOfHZ.add("330103");
+			sidsOfHZ.add("330108");
+			sidsOfHZ.add("330110");
+			sidsOfHZ.add("330186");
+			sidsOfHZ.add("330231");
+	
+			sidsOfXS=new LinkedList<String>();			
+			sidsOfXS.add("330181");			
+			
+			
+			sidsOfYH=new LinkedList<String>();		
+			sidsOfYH.add("330184");
 	}
 	
 	@SuppressWarnings("restriction")
@@ -80,81 +112,15 @@ public class DailySaleController {
 
 	}
 
-	@RequestMapping(value = "/daily", method = RequestMethod.GET)
-	public void handleDaily(@RequestParam(value="date",required=false) String date,HttpServletResponse response) {
-		//0model.addAttribute("propertyId",propertyId);
-	    //model.addAttribute("date", date);
-	
-		System.out.println("      date:"+date);
-		
 
-		if(date==null){
-			date=ISO_time_format.format(new Date(System.currentTimeMillis()));
-		}
-		
-		StringBuffer aStringBuffer=new StringBuffer();
-	
-		List<HouseDailySigned> dailySigneds= HouseDailySignedDBUtil.queryRecords(date);
-		System.out.println(dailySigneds.size());
-		aStringBuffer.append(dailySigneds.size()+"\n");
-		
-		Map<String,List<HouseDailySigned>> propertySaleRecords=new TreeMap<String,List<HouseDailySigned>>();
-		for(HouseDailySigned dailySigned:dailySigneds){
-			
-			
-			//http://localhost:8080/housemvc/house?propertyId=64897079&date=2015-07-13
-			
-			
-			List<HouseDailySigned> saleRecords=propertySaleRecords.get(dailySigned.propertyName);
-			if(saleRecords==null){
-				saleRecords=new LinkedList<HouseDailySigned>();
-				propertySaleRecords.put(dailySigned.propertyName, saleRecords);
-			}
-			
-			saleRecords.add(dailySigned);
-		}
-		
-		//http://localhost:8080/housemvc/house?propertyId=64897079&date=2015-07-13
-		
-		for(Entry<String,List<HouseDailySigned>> entry:propertySaleRecords.entrySet()){
-			aStringBuffer.append("--------------- "+entry.getKey()+" -------------\n");
-			String url=null;
-			for(HouseDailySigned dailySigned:entry.getValue()){
-				
-				 url="http://localhost:8080/housemvc/house?propertyId="+dailySigned.propertyId+"&dateFrom="+date+"&dateTo="+date;
-				
-				aStringBuffer.append(" S:"+dailySigned.signedNumber+" R:"+dailySigned.reservedNumber+" "+dailySigned.signedArea+"m "+dailySigned.signedAvgPrice+"/m "+dailySigned.signedTime+"\n");			
-			}
-			aStringBuffer.append("\n");
-			aStringBuffer.append(url);
-			aStringBuffer.append("\n");
-		}
-		
-		
-		try {
-			 ServletOutputStream  sos=response.getOutputStream();
-			 OutputStreamWriter osw=new OutputStreamWriter(sos,"utf-8");
-			
-			osw.append(" date:"+date+"\n");
-			osw.append(aStringBuffer.toString());
-			osw.flush();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    return ;
-	}
-	
 	
 	//http://localhost:8080/housemvc/daily?date=2015-07-10
 	    public static class SignedRecord{
+	    	    		    	
+	    	PropertyDailySigned houseDailySigned;
 	    	
 	    	
-	    	
-	    	HouseDailySigned houseDailySigned;
-	    	
-	    	
-	    	public SignedRecord(HouseDailySigned houseDailySigned){
+	    	public SignedRecord(PropertyDailySigned houseDailySigned){
 	    		this.houseDailySigned=houseDailySigned;
 	    	}
 			
@@ -217,37 +183,53 @@ public class DailySaleController {
 		
 		//http://localhost:8080/housemvc/daily_jstl?date=2015-08-17
 		@RequestMapping(value = "/daily_jstl", method = RequestMethod.GET)
-		public String handleDaily_JSTL(@RequestParam(value="date",required=false) String date,Model model, HttpSession session) {
+		public String handleDaily_JSTL(@RequestParam(value="date",required=false) String date,@RequestParam(value="city",required=false) String city,Model model, HttpSession session) throws Exception {
 			//0model.addAttribute("propertyId",propertyId);
 		    //model.addAttribute("date", date);
 		
-			System.out.println("      date:"+date);	
+			//System.out.println("      date:"+date);	
 			if(date==null){
-				date=ISO_time_format.format(new Date(System.currentTimeMillis()));			
-				String redictUrl="daily_jstl?date="+date;
-				logger.info("redirect=> "+redictUrl);
-				
-				return "redirect:/"+redictUrl;
-			}
-			
+				date=ISO_time_format.format(new Date(System.currentTimeMillis()));		
+			}	
+					
 			String loginedAccount = (String) session.getAttribute("account");
 			session.setAttribute("account", loginedAccount);
-
-			
+						
 		//	StringBuffer aStringBuffer=new StringBuffer();
 		
-			List<HouseDailySigned> dailySigneds= HouseDailySignedDBUtil.queryRecords(date);
-			System.out.println(dailySigneds.size());
+			String cityName="全部";
+			
+			List<PropertyDailySigned> dailySigneds=null;
+			if(null==city){
+				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDay(date);
+				city="all";
+				cityName="全部";
+			}else if ("hz".equals(city.toLowerCase())){
+				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDaySids(date, sidsOfHZ);
+				cityName="主城区";
+			}else if ("xs".equals(city.toLowerCase())){
+				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDaySids(date, sidsOfXS);
+				cityName="萧山";
+			}else if ("yh".equals(city.toLowerCase())){
+				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDaySids(date, sidsOfYH);
+				cityName="余杭";
+			}else{
+				dailySigneds=PropertyDailySignedAffairs.getRecordsOfDay(date);
+				cityName="全部";
+				city="all";
+			}
+			
+		//	System.out.println(dailySigneds.size());
 		//	aStringBuffer.append(dailySigneds.size()+"\n");
 			logger.info("total dailySigned record: "+dailySigneds.size());
 			
 			
-			Map<String,List<HouseDailySigned>> propertySaleRecords=new TreeMap<String,List<HouseDailySigned>>();
-			for(HouseDailySigned dailySigned:dailySigneds){
+			Map<String,List<PropertyDailySigned>> propertySaleRecords=new TreeMap<String,List<PropertyDailySigned>>();
+			for(PropertyDailySigned dailySigned:dailySigneds){
 	
-				List<HouseDailySigned> saleRecords=propertySaleRecords.get(dailySigned.propertyName);
+				List<PropertyDailySigned> saleRecords=propertySaleRecords.get(dailySigned.propertyName);
 				if(saleRecords==null){
-					saleRecords=new LinkedList<HouseDailySigned>();
+					saleRecords=new LinkedList<PropertyDailySigned>();
 					propertySaleRecords.put(dailySigned.propertyName, saleRecords);
 				}
 				
@@ -255,10 +237,17 @@ public class DailySaleController {
 			}
 			
 			//http://localhost:8080/housemvc/house?propertyId=64897079&date=2015-07-13
+			String dateTo=date;
+			long dateTime=ISO_time_format.parse(date).getTime();
+			long dateFromTime=dateTime-30L*24L*3600L*1000L;
+			String dateFrom=ISO_time_format.format(new Date(dateFromTime));
+			
+			logger.info("default time range, dateFrom:"+dateFrom+" dateTo:"+dateTo);
 			
 			List<PropertySignedRecord> propertyRecords=new LinkedList<PropertySignedRecord>();
+		
 			
-			for(Entry<String,List<HouseDailySigned>> entry:propertySaleRecords.entrySet()){
+			for(Entry<String,List<PropertyDailySigned>> entry:propertySaleRecords.entrySet()){
 		//		aStringBuffer.append("--------------- "+entry.getKey()+" -------------\n");
 				String propertyName=entry.getKey();
 				String url=null;
@@ -267,12 +256,11 @@ public class DailySaleController {
 				String district=null;
 				String signedDate=null;
 				
-				List<SignedRecord> signedRecords=new LinkedList<SignedRecord>();
+				List<SignedRecord> signedRecords=new LinkedList<SignedRecord>();			
 				
-				
-				for(HouseDailySigned dailySigned:entry.getValue()){
+				for(PropertyDailySigned dailySigned:entry.getValue()){
 					
-					 url="/housemvc/house_jstl?propertyId="+dailySigned.propertyId+"&dateFrom="+date+"&dateTo="+date;
+					 url="./property_jstl?propertyId="+dailySigned.propertyId+"&dateFrom="+dateFrom+"&dateTo="+dateTo;
 					 propertyId=dailySigned.propertyId;
 					 propertyTypeCode=dailySigned.propertyTypeCode;
 					 district=dailySigned.district;
@@ -300,10 +288,15 @@ public class DailySaleController {
 			
 			
 			model.addAttribute("propertyRecords", propertyRecords);
-		
+			model.addAttribute("cityName", cityName);
+			model.addAttribute("city", city);
+			model.addAttribute("date", date);
+
 		   
 			return "daily_jstl";
 		}
+		
+		/*
 		@RequestMapping(value = "/daily_json", method = RequestMethod.GET,produces = "application/json; charset=utf-8")
 		@ResponseBody
 		public String handleDaily_JSON(@RequestParam("date") String date) {
@@ -378,4 +371,5 @@ public class DailySaleController {
 		   
 			return JSON.toJSONString(propertyRecords);
 		}
+		*/
 }
