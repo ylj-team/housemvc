@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 
 
 
+
 import javax.servlet.http.HttpSession;
 
 import ylj.house.tmsf.data2.DaySaledHouse;
@@ -70,7 +71,7 @@ public class PropertyController {
 	//http://107.170.208.159:8080/housemvc/house_jstl?propertyId=26201346&dateFrom=2015-08-17&dateTo=2015-08-17
 	@RequestMapping(value = "/property_jstl", method = RequestMethod.GET)
 	public String handleHouse_JSTL(@RequestParam("propertyId") String propertyId, @RequestParam("dateFrom") String dateFrom,
-			@RequestParam("dateTo") String dateTo, Model model,HttpSession session) {
+			@RequestParam("dateTo") String dateTo, Model model,HttpSession session) throws Exception {
 
 		// 0model.addAttribute("propertyId",propertyId);
 		// model.addAttribute("date", date);

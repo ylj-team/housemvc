@@ -302,7 +302,7 @@ public class Do_LoginController {
 		// 璁剧疆session
 		logger.info("set session, login=true");
 		// mins
-		session.setMaxInactiveInterval(7*24 * 60);
+		//session.setMaxInactiveInterval(7*24 * 60);
 		
 		session.setAttribute("login", true);
 		session.setAttribute("account", accountText);
