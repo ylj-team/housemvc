@@ -35,6 +35,8 @@ import ylj.house.tmsf.data.property.Property;
 import ylj.house.tmsf.data.property.PropertyAffairs;
 import ylj.house.tmsf.data2.DaySaledHouse;
 import ylj.house.tmsf.data2.DaySaledHouseAffairs;
+import ylj.house.user.subscription.UserPropertySubscription;
+import ylj.house.user.subscription.UserPropertySubscriptionAffairs;
 import ylj.utils.ConnectionUtil;
 
 @Controller("PropertyController")
@@ -81,7 +83,15 @@ public class PropertyController {
 		String loginedAccount = (String) session.getAttribute("account");
 		//session.setAttribute("account", loginedAccount);
 
-		Property  property=PropertyAffairs.getPropertyId(propertyId);
+		Property property=PropertyAffairs.getPropertyId(propertyId);
+		
+		UserPropertySubscription subscription=UserPropertySubscriptionAffairs.getUserSubscription(loginedAccount, propertyId);
+		boolean isSubscripted=false;
+		if(subscription==null){
+			isSubscripted=false;
+		}else{
+			isSubscripted=true;
+		}
 		
 		logger.info(loginedAccount+" query.     propertyId:" + propertyId+" dateFrom:" + dateFrom+"   dateTo:" + dateTo);
 			
@@ -89,9 +99,10 @@ public class PropertyController {
 		
 		model.addAttribute("dailyStates", dayStates);
 		model.addAttribute("property", property);
-//		model.addAttribute("propertyId", propertyId);
 		model.addAttribute("dateFrom", dateFrom);
 		model.addAttribute("dateTo", dateTo);
+		model.addAttribute("isSubscripted", isSubscripted);
+		
 		// model.addAttribute("dailySigneds", dailySigneds);
 		// model.addAttribute("states", states);
 
