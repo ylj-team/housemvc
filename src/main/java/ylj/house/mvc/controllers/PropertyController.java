@@ -31,6 +31,8 @@ import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpSession;
 
+import ylj.house.tmsf.data.property.Property;
+import ylj.house.tmsf.data.property.PropertyAffairs;
 import ylj.house.tmsf.data2.DaySaledHouse;
 import ylj.house.tmsf.data2.DaySaledHouseAffairs;
 import ylj.utils.ConnectionUtil;
@@ -79,12 +81,15 @@ public class PropertyController {
 		String loginedAccount = (String) session.getAttribute("account");
 		//session.setAttribute("account", loginedAccount);
 
+		Property  property=PropertyAffairs.getPropertyId(propertyId);
+		
 		logger.info(loginedAccount+" query.     propertyId:" + propertyId+" dateFrom:" + dateFrom+"   dateTo:" + dateTo);
 			
 		List<DaySaledHouse> dayStates= 	DaySaledHouseAffairs.queryDaySaledHouse(propertyId, dateFrom,dateTo);	
 		
 		model.addAttribute("dailyStates", dayStates);
-		model.addAttribute("propertyId", propertyId);
+		model.addAttribute("property", property);
+//		model.addAttribute("propertyId", propertyId);
 		model.addAttribute("dateFrom", dateFrom);
 		model.addAttribute("dateTo", dateTo);
 		// model.addAttribute("dailySigneds", dailySigneds);

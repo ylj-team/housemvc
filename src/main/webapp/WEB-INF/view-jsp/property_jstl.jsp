@@ -29,12 +29,18 @@
 		<a href="./do_logout" >logout</a>
 	
 	</h2>
+	<h3>
+		${property.propertyName}
+		${property.city}
+		${property.district}		
+		${property.propertyAddress}
+		${property.developer}
+	</h3>
 
 	
-	
 	<form name="houseSaleFind" action="./property_jstl" method="get" >
-	
-			楼盘：<input type="text" name="propertyId" value="${propertyId}" />
+		
+			楼盘：<input type="text" name="propertyId" value="${property.propertyId}" />
 			开始日期：<input type="date" name="dateFrom" value="${dateFrom}"/>
 			截止日期：<input type="date" name="dateTo" value="${dateTo}"/>
 			
