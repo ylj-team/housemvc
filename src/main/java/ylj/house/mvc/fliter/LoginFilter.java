@@ -101,10 +101,14 @@ request.getQueryString()action=idp.sptopn
 			if (cookies != null) {
 				for (int i = 0; i < cookies.length; i++) {
 
+
+				//	System.out.println("cookie [" + i + "] " + cookies[i].getName() + ":" + cookies[i].getValue() + " Domain=" + cookies[i].getDomain() + " Path="
+				//			+ cookies[i].getPath() + " Comment=" + cookies[i].getComment() + " MaxAge=" + cookies[i].getMaxAge() + " Version=" + cookies[i].getVersion());
+
 					logger.info("cookie [" + i + "] " + cookies[i].getName() + ":" + cookies[i].getValue() + " Domain=" + cookies[i].getDomain() + " Path="
 							+ cookies[i].getPath() + " Comment=" + cookies[i].getComment() + " MaxAge=" + cookies[i].getMaxAge() + " Version=" + cookies[i].getVersion());
-					if (cookies[i].getName().equals("")) {
 
+					if (cookies[i].getName().equals("")) {
 						break;
 					}
 				}
@@ -131,8 +135,8 @@ request.getQueryString()action=idp.sptopn
 	//	System.out.println("seesion.size()="+sessionCounter);
 		// }
 
-		// pass=true;
-		//pass=true;
+		pass=true;
+
 		logger.info("拦截 URI=" + httpRequest.getRequestURI() + " pass:" + pass);
 
 		if (!pass) {
