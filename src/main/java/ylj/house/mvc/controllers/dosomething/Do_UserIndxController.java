@@ -18,6 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import ylj.house.user.subscription.UserPropertySubscription;
+import ylj.house.user.subscription.UserPropertySubscriptionAffairs;
+
 
 @Controller("Do_UserIndxController")
 public class Do_UserIndxController {
@@ -61,7 +64,14 @@ public class Do_UserIndxController {
 
 			// already logined
 			if (login != null && login == true) {
+				
 				model.addAttribute("account", loginedAccount);		
+				
+				List<UserPropertySubscription> subscriptions=UserPropertySubscriptionAffairs.getUserSubscriptions(loginedAccount);
+			
+				model.addAttribute("subscriptions", subscriptions);		
+				
+				
 				return "user_index_jstl";
 			}else{
 				setRedirectToLogin( httpResponse,"/userIdx","未登陆");

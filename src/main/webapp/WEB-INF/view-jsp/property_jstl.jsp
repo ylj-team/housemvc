@@ -22,6 +22,94 @@
 }
 </style>
 
+
+<script type="text/javascript">
+function loadXMLDoc()
+{
+
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+	xmlhttp.onreadystatechange=function(){
+		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+		
+    	//	document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    		
+    	}
+    	
+  	}
+  	
+  	
+	xmlhttp.open("GET","./do_subscribe?propertyId=163840737",true);
+	xmlhttp.send();
+}
+
+function do_subscribe()
+{
+
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+	xmlhttp.onreadystatechange=function(){
+		alert(xmlhttp.responseText);
+		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+		
+    	//	document.getElementById("msg").innerHTML=xmlhttp.responseText;
+    		
+    	}
+    	
+  	}
+  	 
+  	 var propertyId=document.getElementById("propertyId").innerHTML;
+  	
+  	
+	xmlhttp.open("GET","./do_subscribe?propertyId=163840737",true);
+	xmlhttp.send();
+}
+
+function do_unsubscribe()
+{
+
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+	xmlhttp.onreadystatechange=function(){
+	
+		alert(xmlhttp.responseText);
+		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+		
+    	//	document.getElementById("msg").innerHTML=xmlhttp.responseText;
+    		
+    	}
+    	
+  	}
+  	
+  	var propertyId=document.getElementById("propertyId").innerHTML;
+  	
+	xmlhttp.open("GET","./do_unsubscribe?propertyId=163840737",true);
+	xmlhttp.send();
+}
+
+</script>
+
 </head>
 <body>
 	<h2>
@@ -30,6 +118,27 @@
 	
 	</h2>
 	<h3>
+	
+	
+	  	
+	  	<button type="button" onclick="do_subscribe()">+关注</button>
+	  	<button type="button" onclick="do_unsubscribe()">取消关注（已关注）</button>
+	  	
+	  	
+	  	<br>
+
+
+	<c:choose>
+    <c:when test="${isSubscripted==true}">
+      	<button type="button" onclick="loadXMLDoc()" >取消关注（已关注）</button>
+    </c:when>    
+    <c:otherwise>
+       	<button type="button" onclick="loadXMLDoc()" >+关注</button>
+
+    </c:otherwise>
+</c:choose>
+	
+	
 		${property.propertyName}
 		${property.city}
 		${property.district}		
@@ -40,7 +149,7 @@
 	
 	<form name="houseSaleFind" action="./property_jstl" method="get" >
 		
-			楼盘：<input type="text" name="propertyId" value="${property.propertyId}" />
+			楼盘：<input type="text" id="propertyId" name="propertyId" value="${property.propertyId}" />
 			开始日期：<input type="date" name="dateFrom" value="${dateFrom}"/>
 			截止日期：<input type="date" name="dateTo" value="${dateTo}"/>
 			

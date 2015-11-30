@@ -45,7 +45,25 @@
 	
 	
 	<h2>
-		<c:out value="-----------------------------------" />	
+		<c:out value="---------------已关注楼盘------------------" />	
+	</h2>
+	
+		<c:forEach var="subscription" items="${subscriptions}">
+				
+			
+				<li>
+	
+					<a href="./property_jstl?propertyId=${subscription.propertyId}" target="_blank">${subscription.propertyName}</a>
+
+				</li>
+				
+			
+				
+			</c:forEach>
+	
+	
+	<h2>
+		<c:out value="--------------------------------------" />	
 	</h2>
 	
 </body>
