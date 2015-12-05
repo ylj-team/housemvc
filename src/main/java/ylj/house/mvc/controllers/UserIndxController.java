@@ -1,8 +1,11 @@
-package ylj.house.mvc.controllers.dosomething;
+package ylj.house.mvc.controllers;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,14 +21,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import ylj.house.tmsf.data.salestate.PropertyDailySigned;
+import ylj.house.tmsf.data.salestate.PropertyDailySignedAffairs;
+import ylj.house.tmsf.data2.DaySaledHouseAffairs;
 import ylj.house.user.subscription.UserPropertySubscription;
 import ylj.house.user.subscription.UserPropertySubscriptionAffairs;
 
 
-@Controller("Do_UserIndxController")
-public class Do_UserIndxController {
+@Controller("UserIndxController")
+public class UserIndxController {
 
-	static Logger logger = LoggerFactory.getLogger(Do_UserIndxController.class);
+	static Logger logger = LoggerFactory.getLogger(UserIndxController.class);
 
 	private void setRedirectToLogin(HttpServletResponse httpResponse, String nextUrl,String message) throws IOException {
 		//
@@ -54,11 +60,55 @@ public class Do_UserIndxController {
 		httpResponse.sendRedirect(reloginUrl);
 	}
 
+	public static class SubscribedProperty extends UserPropertySubscription{
+		
+		 String propertyId;
+		 
+		 public String getPropertyId() {
+			return propertyId;
+		}
+
+		public void setPropertyId(String propertyId) {
+			this.propertyId = propertyId;
+		}
+
+		public String getPropertyName() {
+			return propertyName;
+		}
+
+		public void setPropertyName(String propertyName) {
+			this.propertyName = propertyName;
+		}
+
+		String propertyName;
+		 int signNumber;
+
+		public int getSignNumber() {
+			return signNumber;
+		}
+
+		public void setSignNumber(int signNumber) {
+			this.signNumber = signNumber;
+		}
+		
+		
+	}
+	
+	private int maxSignedNumber(List<PropertyDailySigned> signeds){
+		int maxSignedNumber=0;		
+		for(PropertyDailySigned signed:signeds){
+			int signedNumber=Integer.parseInt(signed.getSignedNumber()) ;
+			if(signedNumber>maxSignedNumber)
+				maxSignedNumber=signedNumber;
+		}
+		
+		return maxSignedNumber;
+	}
 	
 	@RequestMapping(value = "/userIdx", method = { RequestMethod.POST, RequestMethod.GET })
 	public String handleUser(HttpSession session, Model model,HttpServletResponse httpResponse) throws Exception {
 		
-
+			
 			Boolean login = (Boolean) session.getAttribute("login");
 			String loginedAccount = (String) session.getAttribute("account");
 
@@ -67,8 +117,31 @@ public class Do_UserIndxController {
 				
 				model.addAttribute("account", loginedAccount);		
 				
-				List<UserPropertySubscription> subscriptions=UserPropertySubscriptionAffairs.getUserSubscriptions(loginedAccount);
+				List<SubscribedProperty> subscriptions=new LinkedList<SubscribedProperty>();
+				List<UserPropertySubscription> subs=UserPropertySubscriptionAffairs.getUserSubscriptions(loginedAccount);
 			
+				
+				if(subs.size()>0){
+					SimpleDateFormat ISO_time_format= new SimpleDateFormat("yyyy-MM-dd");;
+					String dateStr=ISO_time_format.format(new Date(System.currentTimeMillis()));
+
+					for(UserPropertySubscription sub:subs){
+						
+						SubscribedProperty subscription=new SubscribedProperty();
+						
+						int signNumber=maxSignedNumber(PropertyDailySignedAffairs.querySaledHouseBetween(sub.getPropertyId(), dateStr, dateStr));
+						
+						subscription.setPropertyId(sub.getPropertyId());
+						subscription.setPropertyName(sub.getPropertyName());
+						subscription.setSignNumber(signNumber);
+						
+						subscriptions.add(subscription);
+					}
+					
+					
+				}
+				
+				
 				model.addAttribute("subscriptions", subscriptions);		
 				
 				

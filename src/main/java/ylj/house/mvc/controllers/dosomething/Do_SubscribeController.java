@@ -41,7 +41,7 @@ public class Do_SubscribeController {
 		// 设置cookie
 		// HttpServletResponse response.addCookie(new Cookie("foo", "bar"));
 		String loginedAccount = (String) session.getAttribute("account");
-
+		logger.info("loginedAccount:"+loginedAccount);
 		JSONObject responseJSONObject = new JSONObject();
 
 		try {
@@ -54,20 +54,24 @@ public class Do_SubscribeController {
 				subscription = new UserPropertySubscription();
 				subscription.setAccount(loginedAccount);
 				subscription.setPropertyId(propertyId);
+				subscription.setSubscriptTime(System.currentTimeMillis());
+				
 				if (property != null)
 					subscription.setPropertyName(property.getPropertyName());
 				// subscription.
-
+				logger.info("account:"+loginedAccount+",propertyId:"+propertyId+",propertyName:"+subscription.getPropertyName());
+				
+				
 				UserPropertySubscriptionAffairs.createSubscription(subscription);
-				responseJSONObject.put("subscribe", "ok");
+				responseJSONObject.put("success", "true");
 				responseJSONObject.put("msg", "subscribe success");
 
 			} else {
-				responseJSONObject.put("subscribe", "ok");
+				responseJSONObject.put("success", "true");
 				responseJSONObject.put("msg", "already subscribed");
 			}
 		} catch (Exception e) {
-			responseJSONObject.put("subscribe", "failed");
+			responseJSONObject.put("success", "false");
 			responseJSONObject.put("msg", "inner error. excepion:"+e);
 			logger.error("",e);
 		}
@@ -90,16 +94,16 @@ public class Do_SubscribeController {
 			// 设置session
 			UserPropertySubscription subscription = UserPropertySubscriptionAffairs.getUserSubscription(loginedAccount, propertyId);
 			if (subscription == null) {
-				responseJSONObject.put("unsubscribe", "ok");
+				responseJSONObject.put("success", "true");
 				responseJSONObject.put("msg", "not subscribed");
 				
 			} else {
 				UserPropertySubscriptionAffairs.deleteSubscription(loginedAccount, propertyId);
-				responseJSONObject.put("unsubscribe", "ok");
+				responseJSONObject.put("success", "true");
 				responseJSONObject.put("msg", "unsubscribe success");
 			}
 		} catch (Exception e) {
-			responseJSONObject.put("unsubscribe", "failed");
+			responseJSONObject.put("success", "false");
 			responseJSONObject.put("msg", "inner error. excepion:"+e);
 			logger.error("",e);
 		}

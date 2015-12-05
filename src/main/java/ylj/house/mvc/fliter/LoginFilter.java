@@ -135,7 +135,7 @@ request.getQueryString()action=idp.sptopn
 	//	System.out.println("seesion.size()="+sessionCounter);
 		// }
 
-		pass=true;
+		//pass=true;
 
 		logger.info("拦截 URI=" + httpRequest.getRequestURI() + " pass:" + pass);
 

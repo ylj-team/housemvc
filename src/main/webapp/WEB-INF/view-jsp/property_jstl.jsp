@@ -24,63 +24,10 @@
 
 
 <script type="text/javascript">
-function loadXMLDoc()
-{
-
-	var xmlhttp;
-	if (window.XMLHttpRequest){
-  		// code for IE7+, Firefox, Chrome, Opera, Safari
-  		xmlhttp=new XMLHttpRequest();
-  	}else{
-  		// code for IE6, IE5
-  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  	}
-  	
-	xmlhttp.onreadystatechange=function(){
-		if (xmlhttp.readyState==4 && xmlhttp.status==200){
-		
-    	//	document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
-    		
-    	}
-    	
-  	}
-  	
-  	
-	xmlhttp.open("GET","./do_subscribe?propertyId=163840737",true);
-	xmlhttp.send();
-}
 
 function do_subscribe()
 {
-
-	var xmlhttp;
-	if (window.XMLHttpRequest){
-  		// code for IE7+, Firefox, Chrome, Opera, Safari
-  		xmlhttp=new XMLHttpRequest();
-  	}else{
-  		// code for IE6, IE5
-  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  	}
-  	
-	xmlhttp.onreadystatechange=function(){
-		alert(xmlhttp.responseText);
-		if (xmlhttp.readyState==4 && xmlhttp.status==200){
-		
-    	//	document.getElementById("msg").innerHTML=xmlhttp.responseText;
-    		
-    	}
-    	
-  	}
-  	 
-  	 var propertyId=document.getElementById("propertyId").innerHTML;
-  	
-  	
-	xmlhttp.open("GET","./do_subscribe?propertyId=163840737",true);
-	xmlhttp.send();
-}
-
-function do_unsubscribe()
-{
+ 	var propertyId=document.getElementById("propertyId").attributes["value"].value;
 
 	var xmlhttp;
 	if (window.XMLHttpRequest){
@@ -93,18 +40,65 @@ function do_unsubscribe()
   	
 	xmlhttp.onreadystatechange=function(){
 	
-		alert(xmlhttp.responseText);
+		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			
+			//alert(xmlhttp.responseText);
+			
+			var responseObj = eval('(' + xmlhttp.responseText + ')');
+			if(responseObj.success === "true"){
+ 				alert("关注成功");
+ 				//document.getElementById("subscribeButton").style.display="none";
+				//document.getElementById("unsubscribeButton").style.display="inline";
+				
+				document.getElementById("subscribeArea").innerHTML="<button  id='unsubscribeButton' type='button' onclick='do_unsubscribe()'>（已关注）取消关注</button>";
+			
+			}else{
+				alert("关注失败");
+    		}
+    	}
+  	}
+  	 
+	xmlhttp.open("GET","./do_subscribe?propertyId="+propertyId,true);
+	xmlhttp.send();
+}
+
+function do_unsubscribe()
+{
+	  	
+  	var propertyId=document.getElementById("propertyId").attributes["value"].value;
+
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+  		// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}else{
+  		// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+	xmlhttp.onreadystatechange=function(){
+	
+		
 		if (xmlhttp.readyState==4 && xmlhttp.status==200){
 		
-    	//	document.getElementById("msg").innerHTML=xmlhttp.responseText;
+    		//alert(xmlhttp.responseText);
     		
+    		var responseObj = eval('(' + xmlhttp.responseText + ')');
+    		if(responseObj.success === "true"){
+    		 	alert("取消关注成功");
+    		 	//document.getElementById("subscribeButton").style.display="inline";
+				//document.getElementById("unsubscribeButton").style.display="none";
+    			document.getElementById("subscribeArea").innerHTML="<button  id='subscribeButton' type='button' onclick='do_subscribe()'>+关注</button>";
+    		}else{
+    			alert("取消关注失败");
+    		}
+    	
     	}
     	
   	}
-  	
-  	var propertyId=document.getElementById("propertyId").innerHTML;
-  	
-	xmlhttp.open("GET","./do_unsubscribe?propertyId=163840737",true);
+
+	
+	xmlhttp.open("GET","./do_unsubscribe?propertyId="+propertyId,true);
 	xmlhttp.send();
 }
 
@@ -120,30 +114,23 @@ function do_unsubscribe()
 	<h3>
 	
 	
+	  	<div  id="subscribeArea" >
+	  		<c:if test="${ isSubscripted == true }">	 		  		 	
+	  		 	<button  id="unsubscribeButton" type="button" onclick="do_unsubscribe()">（已关注）取消关注</button>	  	  		 	
+	  		</c:if>
+	  		<c:if test="${ isSubscripted == false }">		
+	  		 	<button  id="subscribeButton" type="button" onclick="do_subscribe()">+关注</button>	  		 		  		 	 	  		 	
+	  		</c:if>
+	  	</div>
+	 
 	  	
-	  	<button type="button" onclick="do_subscribe()">+关注</button>
-	  	<button type="button" onclick="do_unsubscribe()">取消关注（已关注）</button>
-	  	
-	  	
-	  	<br>
-
-
-	<c:choose>
-    <c:when test="${isSubscripted==true}">
-      	<button type="button" onclick="loadXMLDoc()" >取消关注（已关注）</button>
-    </c:when>    
-    <c:otherwise>
-       	<button type="button" onclick="loadXMLDoc()" >+关注</button>
-
-    </c:otherwise>
-</c:choose>
-	
-	
 		${property.propertyName}
 		${property.city}
 		${property.district}		
 		${property.propertyAddress}
 		${property.developer}
+		
+		
 	</h3>
 
 	
@@ -211,7 +198,6 @@ function do_unsubscribe()
 		</ul>
 
 	</c:if>
-
 
 </body>
 </html>

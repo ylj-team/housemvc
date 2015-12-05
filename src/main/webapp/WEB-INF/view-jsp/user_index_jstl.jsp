@@ -53,7 +53,7 @@
 			
 				<li>
 	
-					<a href="./property_jstl?propertyId=${subscription.propertyId}" target="_blank">${subscription.propertyName}</a>
+					<a href="./property_jstl?propertyId=${subscription.propertyId}" target="_blank">${subscription.propertyName}(${subscription.signNumber})</a>
 
 				</li>
 				
